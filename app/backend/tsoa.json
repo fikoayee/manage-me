@@ -1,0 +1,29 @@
+{
+  "entryFile": "src/app.ts",
+  "noImplicitAdditionalProperties": "throw-on-extras",
+  "controllerPathGlobs": ["src/controllers/**/*.ts", "src/interfaces/*.ts"],
+  "spec": {
+    "outputDirectory": "build",
+    "specVersion": 3,
+    "securityDefinitions": {
+      "jwt": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header"
+      },
+      "tsoa_auth": {
+        "type": "oauth2",
+        "authorizationUrl": "http://swagger.io/api/oauth/dialog",
+        "flow": "implicit",
+        "scopes": {
+          "write:pets": "modify things",
+          "read:pets": "read things"
+        }
+      }
+    }
+  },
+
+  "routes": {
+    "routesDir": "build"
+  }
+}
