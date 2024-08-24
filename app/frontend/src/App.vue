@@ -3,8 +3,9 @@
     <v-navigation-drawer
       theme="dark"
       permanent
-      :rail="!this.$vuetify.display.mdAndUp"
-      width="200"
+      :rail="!this.$vuetify.display.mdAndUp && !hideNavbar"
+      :width="hideNavbar ? 0 : 200"
+      :hidden="hideNavbar"
     >
       <v-list-item
         prepend-avatar="https://randomuser.me/api/portraits/women/75.jpg"
@@ -53,6 +54,11 @@ export default defineComponent({
       this.router.push(route);
     },
   },
+  computed: {
+    hideNavbar() {
+      return this.$route.name === "Login" || this.$route.name === "Register";
+    },
+  },
   setup() {
     const router = useRouter();
     return {
@@ -62,4 +68,6 @@ export default defineComponent({
   mounted() {},
 });
 </script>
-<style scoped></style>
+<style scoped>
+
+</style>
