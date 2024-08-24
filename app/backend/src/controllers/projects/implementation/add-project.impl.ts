@@ -1,5 +1,5 @@
 import { ProjectDTO } from "dto/projects/project.dto";
-import { addProjectBody } from "../../../interfaces/add-project";
+import { addProjectBody } from "../../../interfaces/add-project.interface";
 import { Project } from "../../../models/project.model";
 
 const addProject = async (projectBody: addProjectBody): Promise<any> => {

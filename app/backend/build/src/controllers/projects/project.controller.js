@@ -29,8 +29,9 @@ const add_project_impl_1 = __importDefault(require("./implementation/add-project
 const patch_project_impl_1 = __importDefault(require("./implementation/patch-project.impl"));
 const delete_project_impl_1 = __importDefault(require("./implementation/delete-project.impl"));
 const get_project_impl_1 = __importDefault(require("./implementation/get-project.impl"));
+const auth_1 = require("../../middlewares/auth");
 let ProjectController = class ProjectController extends tsoa_1.Controller {
-    getProjectList() {
+    getProjectList(req) {
         return __awaiter(this, void 0, void 0, function* () {
             return (0, get_project_list_impl_1.default)();
         });
@@ -58,23 +59,29 @@ let ProjectController = class ProjectController extends tsoa_1.Controller {
 };
 exports.ProjectController = ProjectController;
 __decorate([
-    (0, tsoa_1.Get)("/all")
+    (0, tsoa_1.Get)("/all"),
+    (0, tsoa_1.Middlewares)([auth_1.authenticate]),
+    __param(0, (0, tsoa_1.Request)())
 ], ProjectController.prototype, "getProjectList", null);
 __decorate([
     (0, tsoa_1.Get)("/project/{projectId}"),
+    (0, tsoa_1.Middlewares)([auth_1.authenticate]),
     __param(0, (0, tsoa_1.Path)())
 ], ProjectController.prototype, "getProject", null);
 __decorate([
     (0, tsoa_1.Post)("/project"),
+    (0, tsoa_1.Middlewares)([auth_1.authenticate]),
     __param(0, (0, tsoa_1.Body)())
 ], ProjectController.prototype, "addProject", null);
 __decorate([
     (0, tsoa_1.Patch)("/project/{projectId}"),
+    (0, tsoa_1.Middlewares)([auth_1.authenticate]),
     __param(0, (0, tsoa_1.Path)()),
     __param(1, (0, tsoa_1.Body)())
 ], ProjectController.prototype, "patchProject", null);
 __decorate([
     (0, tsoa_1.Delete)("/project/{projectId}"),
+    (0, tsoa_1.Middlewares)([auth_1.authenticate]),
     __param(0, (0, tsoa_1.Path)())
 ], ProjectController.prototype, "deleteProject", null);
 exports.ProjectController = ProjectController = __decorate([

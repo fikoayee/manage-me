@@ -8,6 +8,8 @@ const app_1 = require("./app");
 const cors_1 = __importDefault(require("cors"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const http_error_model_1 = __importDefault(require("./models/http-error.model"));
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 const port = process.env.PORT || 3000;
 // error handling middleware - only executes if request doesnt have an endpoint
 app_1.app.use((req, res, next) => {

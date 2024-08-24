@@ -4,6 +4,9 @@ import cors from "cors";
 import mongoose from "mongoose";
 import express, { NextFunction, Request, Response } from "express";
 import HttpError from "./models/http-error.model";
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const port = process.env.PORT || 3000;
 
