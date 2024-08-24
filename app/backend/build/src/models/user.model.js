@@ -27,7 +27,7 @@ exports.User = void 0;
 const roles_constants_1 = require("../constants/roles.constants");
 const mongoose_1 = __importStar(require("mongoose"));
 const userSchema = new mongoose_1.Schema({
-    email: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique: true, lowercase: true },
     password: {
         type: String,
         required: true,
@@ -42,8 +42,8 @@ const userSchema = new mongoose_1.Schema({
     },
     color: {
         type: String,
-        required: true
-    }
+        required: true,
+    },
 });
 const User = mongoose_1.default.model("User", userSchema);
 exports.User = User;

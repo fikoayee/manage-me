@@ -6,15 +6,15 @@ import jwt from "jsonwebtoken";
 const login = async (loginBody: loginBody): Promise<any> => {
   const { email, password } = loginBody;
 
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email: email.toLowerCase() });
 
   if (!user) {
-    throw new HttpError("An account with this email doesn't exist.", 500);
+    throw new HttpError("An account with this email doesn't exist.", 404);
   }
 
   const isPasswordCorrect = await bcrypt.compare(password, user.password);
   if (!isPasswordCorrect) {
-    throw new HttpError("Wrong password.", 500);
+    throw new HttpError("Wrong password.", 401);
   }
 
   const token = jwt.sign(

@@ -2,7 +2,7 @@ import { RoleEnum } from "../constants/roles.constants";
 import mongoose, { Schema, Types, InferSchemaType, Model } from "mongoose";
 import { OmitTimestamps } from "../interfaces/omit-timestamps.interface";
 const userSchema = new Schema({
-  email: { type: String, required: true, unique: true },
+  email: { type: String, required: true, unique: true, lowercase: true },
   password: {
     type: String,
     required: true,
@@ -15,10 +15,10 @@ const userSchema = new Schema({
     enum: RoleEnum,
     required: true,
   },
-  color:{
+  color: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 });
 
 // Interface with the required methods

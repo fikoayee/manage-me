@@ -19,7 +19,7 @@ const patchProject = (projectId, patchProjectBody) => __awaiter(void 0, void 0, 
         _id: projectId,
     });
     if (!project) {
-        throw new http_error_model_1.default(`There is no project with id ${projectId}`, 500);
+        throw new http_error_model_1.default(`There is no project with id ${projectId}`, 404);
     }
     yield project_model_1.Project.findByIdAndUpdate(project.id, {
         name: patchProjectBody.name,

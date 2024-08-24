@@ -9,7 +9,7 @@ const patchProject = async (
     _id: projectId,
   });
   if (!project) {
-    throw new HttpError(`There is no project with id ${projectId}`, 500);
+    throw new HttpError(`There is no project with id ${projectId}`, 404);
   }
   await Project.findByIdAndUpdate(project.id, {
     name: patchProjectBody.name,

@@ -15,20 +15,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const user_model_1 = require("../../../models/user.model");
 const http_error_model_1 = __importDefault(require("../../../models/http-error.model"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
-const registerUser = (registerBody) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email, password, role, color } = registerBody;
-    const userExist = yield user_model_1.User.findOne({ email });
-    if (userExist) {
-        throw new http_error_model_1.default("An account with this email already exists.", 409);
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const login = (loginBody) => __awaiter(void 0, void 0, void 0, function* () {
+    const { email, password } = loginBody;
+    const user = yield user_model_1.User.findOne({ email: email.toLowerCase() });
+    if (!user) {
+        throw new http_error_model_1.default("An account with this email doesn't exist.", 404);
     }
-    const hashedPassword = yield bcrypt_1.default.hash(password, 10);
-    const newUser = new user_model_1.User({
-        email,
-        password: hashedPassword,
-        role,
-        color,
-    });
-    const user = yield user_model_1.User.create(newUser);
-    return user;
+    const isPasswordCorrect = yield bcrypt_1.default.compare(password, user.password);
+    if (!isPasswordCorrect) {
+        throw new http_error_model_1.default("Wrong password.", 401);
+    }
+    const token = jsonwebtoken_1.default.sign({ userId: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "1h" });
+    return token;
 });
-exports.default = registerUser;
+exports.default = login;

@@ -9,7 +9,6 @@ export const authenticate = (
   next: NextFunction
 ) => {
   const token = req.headers["authorization"]?.split(" ")[1];
-
   if (!token) {
     throw new HttpError(`No token provided`, 401);
   }
@@ -20,6 +19,7 @@ export const authenticate = (
     console.log(req.user);
     next();
   } catch (err) {
+    console.log(err);
     throw new HttpError(`Invalid token`, 401);
   }
 };

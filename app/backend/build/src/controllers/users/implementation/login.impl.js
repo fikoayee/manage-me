@@ -20,11 +20,11 @@ const login = (loginBody) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = loginBody;
     const user = yield user_model_1.User.findOne({ email });
     if (!user) {
-        throw new http_error_model_1.default("An account with this email doesn't exist.", 500);
+        throw new http_error_model_1.default("An account with this email doesn't exist.", 404);
     }
     const isPasswordCorrect = yield bcrypt_1.default.compare(password, user.password);
     if (!isPasswordCorrect) {
-        throw new http_error_model_1.default("Wrong password.", 500);
+        throw new http_error_model_1.default("Wrong password.", 401);
     }
     const token = jsonwebtoken_1.default.sign({ userId: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "1h" });
     return token;

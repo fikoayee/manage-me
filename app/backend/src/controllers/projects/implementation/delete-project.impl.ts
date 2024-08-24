@@ -5,7 +5,7 @@ const deleteProject = async (projectId: string): Promise<unknown> => {
     _id: projectId,
   });
   if (!project) {
-    throw new HttpError(`There is no project with id ${projectId}`, 500);
+    throw new HttpError(`There is no project with id ${projectId}`, 404);
   }
   await Project.findByIdAndDelete(project.id);
   return "Project has been succesfully deleted"

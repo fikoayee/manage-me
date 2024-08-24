@@ -9,7 +9,7 @@ const registerUser = async (registerBody: registerBody): Promise<any> => {
   const userExist = await User.findOne({ email });
 
   if (userExist) {
-    throw new HttpError("An account with this email already exists.", 500);
+    throw new HttpError("An account with this email already exists.", 409);
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);

@@ -17,7 +17,7 @@ const http_error_model_1 = __importDefault(require("../../../models/http-error.m
 const getProject = (projectId) => __awaiter(void 0, void 0, void 0, function* () {
     const project = yield project_model_1.Project.findById(projectId);
     if (!project) {
-        throw new http_error_model_1.default(`There is no project with id ${projectId}`, 500);
+        throw new http_error_model_1.default(`There is no project with id ${projectId}`, 404);
     }
     return { project: project };
 });
