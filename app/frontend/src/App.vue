@@ -1,30 +1,65 @@
-<script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue" />
+  <v-app class="min-h-full min-w-full">
+    <v-navigation-drawer
+      theme="dark"
+      permanent
+      :rail="!this.$vuetify.display.mdAndUp"
+      width="200"
+    >
+      <v-list-item
+        prepend-avatar="https://randomuser.me/api/portraits/women/75.jpg"
+        nav
+      ></v-list-item>
+      <v-divider></v-divider>
+      <v-list density="comfortable" nav>
+        <v-list-item
+          v-for="item in menuItems"
+          :prepend-icon="item.icon"
+          :value="item.title"
+          :title="item.title"
+          @click="handleNavigation(item.route)"
+        ></v-list-item>
+      </v-list>
+    </v-navigation-drawer>
+    <v-main class="bg-neutral-800"> <RouterView /></v-main>
+  </v-app>
 </template>
-
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>
+<script lang="ts">
+import { defineComponent } from "vue";
+import { useRouter } from "vue-router";
+export default defineComponent({
+  components: {},
+  props: {},
+  data() {
+    return {
+      menuItems: [
+        {
+          title: "Projects",
+          icon: "mdi-view-dashboard",
+          route: "/projects",
+          selected: false,
+        },
+        {
+          title: "Notifications",
+          icon: "mdi-forum",
+          route: "/notifications",
+          selected: true,
+        },
+      ],
+    };
+  },
+  methods: {
+    handleNavigation(route: string) {
+      this.router.push(route);
+    },
+  },
+  setup() {
+    const router = useRouter();
+    return {
+      router,
+    };
+  },
+  mounted() {},
+});
+</script>
+<style scoped></style>
