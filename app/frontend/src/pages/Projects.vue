@@ -182,7 +182,13 @@ export default defineComponent({
   setup() {
     const { getProjects, deleteProject, updateProject, createProject } =
       useProject();
-    return { getProjects, deleteProject, updateProject, createProject };
+
+    return {
+      getProjects,
+      deleteProject,
+      updateProject,
+      createProject,
+    };
   },
   data() {
     return {
