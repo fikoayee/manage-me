@@ -3,6 +3,8 @@
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { TsoaRoute, fetchMiddlewares, ExpressTemplateService } from '@tsoa/runtime';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { TaskController } from './../src/controllers/tasks/task.controller';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { ProjectController } from './../src/controllers/projects/project.controller';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { AuthController } from './../src/controllers/auth/auth.controller';
@@ -48,6 +50,130 @@ export function RegisterRoutes(app: Router) {
 
 
     
+        app.post('/tasks/task',
+            ...(fetchMiddlewares<RequestHandler>(TaskController)),
+            ...(fetchMiddlewares<RequestHandler>(TaskController.prototype.addTask)),
+
+            async function TaskController_addTask(request: ExRequest, response: ExResponse, next: any) {
+            const args: Record<string, TsoaRoute.ParameterSchema> = {
+                    addTaskBody: {"in":"body","name":"addTaskBody","required":true,"dataType":"any"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+
+                const controller = new TaskController();
+
+              await templateService.apiHandler({
+                methodName: 'addTask',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/tasks/project/:projectId',
+            ...(fetchMiddlewares<RequestHandler>(TaskController)),
+            ...(fetchMiddlewares<RequestHandler>(TaskController.prototype.getProjectTasks)),
+
+            async function TaskController_getProjectTasks(request: ExRequest, response: ExResponse, next: any) {
+            const args: Record<string, TsoaRoute.ParameterSchema> = {
+                    projectId: {"in":"path","name":"projectId","required":true,"dataType":"string"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+
+                const controller = new TaskController();
+
+              await templateService.apiHandler({
+                methodName: 'getProjectTasks',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.patch('/tasks/task/:taskId',
+            ...(fetchMiddlewares<RequestHandler>(TaskController)),
+            ...(fetchMiddlewares<RequestHandler>(TaskController.prototype.patchTask)),
+
+            async function TaskController_patchTask(request: ExRequest, response: ExResponse, next: any) {
+            const args: Record<string, TsoaRoute.ParameterSchema> = {
+                    req: {"in":"request","name":"req","required":true,"dataType":"object"},
+                    taskId: {"in":"path","name":"taskId","required":true,"dataType":"string"},
+                    patchTaskBody: {"in":"body","name":"patchTaskBody","required":true,"dataType":"any"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+
+                const controller = new TaskController();
+
+              await templateService.apiHandler({
+                methodName: 'patchTask',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.delete('/tasks/task/:taskId',
+            ...(fetchMiddlewares<RequestHandler>(TaskController)),
+            ...(fetchMiddlewares<RequestHandler>(TaskController.prototype.deleteTask)),
+
+            async function TaskController_deleteTask(request: ExRequest, response: ExResponse, next: any) {
+            const args: Record<string, TsoaRoute.ParameterSchema> = {
+                    req: {"in":"request","name":"req","required":true,"dataType":"object"},
+                    taskId: {"in":"path","name":"taskId","required":true,"dataType":"string"},
+                    patchTaskBody: {"in":"body","name":"patchTaskBody","required":true,"dataType":"any"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+
+                const controller = new TaskController();
+
+              await templateService.apiHandler({
+                methodName: 'deleteTask',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/projects/all',
             ...(fetchMiddlewares<RequestHandler>(ProjectController)),
             ...(fetchMiddlewares<RequestHandler>(ProjectController.prototype.getProjectList)),
