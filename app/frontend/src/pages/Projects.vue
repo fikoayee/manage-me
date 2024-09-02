@@ -16,10 +16,9 @@
       persistent
     >
       <v-card
-        width="500"
         :title="projectBody?._id ? 'Edit Project' : 'Create Project'"
         theme="dark"
-        class="px-4"
+        class="px-4 w-[450px] sm:w-[500px]"
         rounded="xl"
       >
         <v-form v-model="valid">
@@ -145,7 +144,9 @@
           </v-card-title>
           <v-card-subtitle>2024-08-14</v-card-subtitle>
           <v-card-text class="h-[174px] overflow-y-scroll">
-            {{ project.description ? project.description : "No description" }}
+            <span :class="project.description ? '' : 'text-neutral-500'">
+              {{ project.description ? project.description : "No description" }}
+            </span>
           </v-card-text>
           <div class="h-[48px] mt-2 flex items-end">
             <div class="pl-4 w-full flex items-center space-x-2">
@@ -197,6 +198,7 @@ export default defineComponent({
       showToast: false,
       colorToast: "red",
       isPageLoading: true,
+      selectedProjectBody: null,
       projectVisible: false,
       deleteVisible: false,
       actionBtnLoading: false,
@@ -231,7 +233,8 @@ export default defineComponent({
       this.colorToast = type === "success" ? "#34d19a" : "red-accent-2";
     },
     handleOpenProject(selectedProject?: any) {
-      selectedProject ? (this.projectBody = selectedProject) : null;
+      this.selectedProjectBody = selectedProject;
+      selectedProject ? (this.projectBody = { ...selectedProject }) : null;
       this.projectVisible = true;
     },
     handleOpenDelete(selectedProject: any) {
@@ -248,10 +251,6 @@ export default defineComponent({
       await new Promise((resolve) => setTimeout(resolve, 500));
       this.deleteInput = "";
     },
-
-    // handleNavigation() {
-    //   this.router.push("/item");
-    // },
 
     async getProjectList() {
       try {
@@ -295,8 +294,9 @@ export default defineComponent({
       this.actionBtnLoading = true;
       try {
         const response = await this.updateProject(projectId, projectBody);
-        console.log(response);
         if (response) {
+          this.selectedProjectBody.name = projectBody.name;
+          this.selectedProjectBody.description = projectBody.description;
           this.createToast("Success! Project has been updated.", "success");
         } else {
           this.createToast(

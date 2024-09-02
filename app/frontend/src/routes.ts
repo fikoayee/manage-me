@@ -3,6 +3,7 @@ import Projects from "./pages/Projects.vue";
 import NotFound from "./pages/NotFound.vue";
 import Login from "./pages/Login.vue";
 import Register from "./pages/Register.vue";
+import ProjectItem from "./pages/ProjectItem.vue";
 
 const routes = [
   {
@@ -18,6 +19,7 @@ const routes = [
     meta: { hideNavbar: true },
   },
   { path: "/projects", name: "Projects", component: Projects },
+  { path: "/projects/asd", name: "Project", component: ProjectItem },
   { path: "/:pathMatch(.*)*", name: "NotFound", component: NotFound },
 ];
 

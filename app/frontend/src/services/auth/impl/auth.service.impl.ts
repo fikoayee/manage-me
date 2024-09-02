@@ -11,7 +11,7 @@ export class AuthServiceImpl implements AuthService {
       );
       return response
     } catch (err) {
-      throw new Error("Wrong password.");
+      throw new Error("Could not login user.");
     }
   }
   async register(registerBody: IRegisterBody): Promise<any> {

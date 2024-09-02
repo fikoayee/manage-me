@@ -123,7 +123,9 @@ export default defineComponent({
     async handleLogin() {
       try {
         const response = await this.login(this.registerData);
-        console.log(response);
+        if (response.status === 200) {
+          this.handleNavigation('/projects')
+        }
         if (!response) {
           this.createToast("Invalid Credentials");
         }
