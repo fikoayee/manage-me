@@ -22,32 +22,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserController = void 0;
+// src/users/usersController.ts
 const tsoa_1 = require("tsoa");
-const dotenv_1 = __importDefault(require("dotenv"));
-const register_user_impl_1 = __importDefault(require("./implementation/register-user.impl"));
-const login_impl_1 = __importDefault(require("./implementation/login.impl"));
-dotenv_1.default.config();
+const auth_1 = require("../../middlewares/auth");
+const get_user_impl_1 = __importDefault(require("./implementation/get-user.impl"));
 let UserController = class UserController extends tsoa_1.Controller {
-    register(registerBody) {
+    getProjectTasks(req, userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return (0, register_user_impl_1.default)(registerBody);
-        });
-    }
-    login(loginBody) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return (0, login_impl_1.default)(loginBody);
+            return (0, get_user_impl_1.default)(userId);
         });
     }
 };
 exports.UserController = UserController;
 __decorate([
-    (0, tsoa_1.Post)("/register"),
-    __param(0, (0, tsoa_1.Body)())
-], UserController.prototype, "register", null);
-__decorate([
-    (0, tsoa_1.Post)("/login"),
-    __param(0, (0, tsoa_1.Body)())
-], UserController.prototype, "login", null);
+    (0, tsoa_1.Get)("/user/{userId}"),
+    (0, tsoa_1.Middlewares)([auth_1.authenticate]),
+    __param(0, (0, tsoa_1.Request)()),
+    __param(1, (0, tsoa_1.Path)())
+], UserController.prototype, "getProjectTasks", null);
 exports.UserController = UserController = __decorate([
     (0, tsoa_1.Route)("users")
 ], UserController);
