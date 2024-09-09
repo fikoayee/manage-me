@@ -123,7 +123,7 @@
           rounded="lg"
           class="text-none"
           prepend-icon="mdi mdi-plus"
-          @click="handleOpenProject()"
+          @click="handleOpenProjectDialog()"
           >Create Project</v-btn
         ></v-col
       >
@@ -138,8 +138,9 @@
           variant="elevated"
           theme="dark"
           elevation="24"
+         
         >
-          <v-card-title class="">
+          <v-card-title class="hover:text-purple-600"  @click="navigateToProjectItem(project)">
             {{ project.name }}
           </v-card-title>
           <v-card-subtitle>2024-08-14</v-card-subtitle>
@@ -163,7 +164,7 @@
                 icon="mdi mdi-cog-outline"
                 class="ma-0"
                 variant="text"
-                @click="handleOpenProject(project)"
+                @click="handleOpenProjectDialog(project)"
               ></v-btn>
             </div>
           </div>
@@ -174,6 +175,7 @@
 </template>
 <script lang="ts">
 import { defineComponent } from "vue";
+import { useRouter } from "vue-router";
 import { useProject } from "../composables/useProject.ts";
 import { IProjectBody } from "../services/datasources/project.service.ts";
 import Loading from "../components/Loading.vue";
@@ -183,12 +185,14 @@ export default defineComponent({
   setup() {
     const { getProjects, deleteProject, updateProject, createProject } =
       useProject();
+    const router = useRouter();
 
     return {
       getProjects,
       deleteProject,
       updateProject,
       createProject,
+      router,
     };
   },
   data() {
@@ -227,12 +231,15 @@ export default defineComponent({
   },
   computed: {},
   methods: {
+    navigateToProjectItem(project: any) {
+      this.router.push(`/projects/${project._id}`);
+    },
     createToast(message: string, type?: "success" | "error") {
       this.toastMessage = message;
       this.showToast = true;
       this.colorToast = type === "success" ? "#34d19a" : "red-accent-2";
     },
-    handleOpenProject(selectedProject?: any) {
+    handleOpenProjectDialog(selectedProject?: any) {
       this.selectedProjectBody = selectedProject;
       selectedProject ? (this.projectBody = { ...selectedProject }) : null;
       this.projectVisible = true;

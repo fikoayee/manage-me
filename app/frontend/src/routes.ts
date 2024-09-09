@@ -19,7 +19,12 @@ const routes = [
     meta: { hideNavbar: true },
   },
   { path: "/projects", name: "Projects", component: Projects },
-  { path: "/projects/asd", name: "Project", component: ProjectItem },
+  {
+    path: "/projects/:id",
+    name: "Project",
+    component: ProjectItem,
+    props: true,
+  },
   { path: "/:pathMatch(.*)*", name: "NotFound", component: NotFound },
 ];
 

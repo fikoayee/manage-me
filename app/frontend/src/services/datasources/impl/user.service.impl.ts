@@ -9,7 +9,7 @@ export class UserServiceImpl implements UserService {
         `${this.SERVICE_PATH_USERS}/login`,
         loginBody
       );
-      return response
+      return response;
     } catch (err) {
       throw new Error("Wrong password.");
     }
@@ -20,9 +20,19 @@ export class UserServiceImpl implements UserService {
         `${this.SERVICE_PATH_USERS}/register`,
         registerBody
       );
-      return response
+      return response;
     } catch (err) {
       throw new Error("Could not register account.");
+    }
+  }
+  async getUser(userId: string): Promise<unknown> {
+    try {
+      const response = await api.get(
+        `${this.SERVICE_PATH_USERS}/user/${userId}`
+      );
+      return response;
+    } catch (err) {
+      throw new Error("Could not get the user");
     }
   }
 }

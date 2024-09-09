@@ -11,6 +11,7 @@
   "dependencies": {
     "@mdi/font": "^7.4.47",
     "axios": "^1.7.5",
+    "date-fns": "^3.6.0",
     "vue": "^3.4.31",
     "vue-router": "^4.4.3"
   },
