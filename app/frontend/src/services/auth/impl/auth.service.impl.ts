@@ -9,7 +9,8 @@ export class AuthServiceImpl implements AuthService {
         `${this.SERVICE_PATH_AUTH}/login`,
         loginBody
       );
-      return response
+      console.log(response);
+      return response;
     } catch (err) {
       throw new Error("Could not login user.");
     }
@@ -20,7 +21,7 @@ export class AuthServiceImpl implements AuthService {
         `${this.SERVICE_PATH_AUTH}/register`,
         registerBody
       );
-      return response
+      return response;
     } catch (err) {
       throw new Error("Could not register account.");
     }

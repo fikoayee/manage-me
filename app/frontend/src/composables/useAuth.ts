@@ -13,11 +13,21 @@ export const useAuth = () => {
     }
   };
 
+  const getAuthUser = () => {
+    console.log("fafa");
+    const userJson = localStorage.getItem("currUser");
+    if (userJson) {
+      return JSON.parse(userJson);
+    }
+    return null;
+  };
+
   const login = async (loginBody: ILoginBody) => {
     try {
       const response = await authService.login(loginBody);
-      token.value = response.data;
-      localStorage.setItem("jwtToken", response.data);
+      console.log(response.data);
+      localStorage.setItem("currUser", JSON.stringify(response.data.user));
+      localStorage.setItem("jwtToken", response.data.token);
       return response;
     } catch (error) {
       return null;
@@ -36,6 +46,7 @@ export const useAuth = () => {
   const logout = () => {
     token.value = null;
     localStorage.removeItem("jwtToken");
+    localStorage.removeItem("currUser");
   };
 
   const isAuthenticated = () => {
@@ -49,6 +60,7 @@ export const useAuth = () => {
     register,
     logout,
     isAuthenticated,
-    loadToken
+    loadToken,
+    getAuthUser,
   };
 };

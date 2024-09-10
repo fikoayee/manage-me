@@ -4,9 +4,3 @@ export interface TaskService {
   patchTask(taskId: string, patchBody: any): Promise<unknown>;
   deleteTask(taskId: string): Promise<unknown>;
 }
-
-// export interface IProjectBody {
-//   name: String;
-//   description: String;
-//   color: String;
-// }

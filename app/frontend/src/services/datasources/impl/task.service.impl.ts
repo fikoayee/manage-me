@@ -5,6 +5,9 @@ export class TaskServiceImpl implements TaskService {
   private SERVICE_PATH_TASKS = "/tasks";
 
   async addTask(taskBody: any): Promise<unknown> {
+    taskBody.dateCreate = new Date();
+    taskBody.status = taskBody.status? taskBody.status : 'todo' 
+    taskBody.priority = taskBody.priority? taskBody.priority : 'high' 
     try {
       const respnse = await api.post(
         `${this.SERVICE_PATH_TASKS}/task`,
@@ -12,6 +15,7 @@ export class TaskServiceImpl implements TaskService {
       );
       return respnse;
     } catch (err) {
+      console.log(err);
       throw new Error("Could not add task.");
     }
   }

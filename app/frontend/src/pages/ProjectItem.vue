@@ -43,14 +43,19 @@
           </v-col>
           <v-col cols="4" class=""
             ><v-icon icon="mdi mdi-account" /><span class="mr-2">Owner:</span>
-            {{ taskBody.ownerInfo[0].email }}</v-col
-          >
+            {{ taskBody?.ownerInfo ? taskBody?.ownerInfo[0].email : "" }}
+          </v-col>
           <v-col cols="4"
             ><v-icon icon="mdi mdi-calendar-start-outline mr-1" /><span
               class="mr-2"
               >Create Date:</span
-            >{{ formatDate(taskBody.dateCreate, "dd - MM - yy") }}</v-col
-          >
+            >
+            {{
+              taskBody?.dateCreate
+                ? formatDate(taskBody?.dateCreate, "dd - MM - yy")
+                : ""
+            }}
+          </v-col>
         </v-col>
       </v-row>
       <v-textarea
@@ -77,10 +82,10 @@
         <v-btn class="" text="Cancel" @click="onCloseTask"></v-btn>
         <v-btn
           class="ms-auto"
-          text="Create"
+          :text="taskBody._id ? 'Edit' : 'Create'"
           :disabled="!valid"
           @click="
-            taskBody._id
+            taskBody.id
               ? handleTaskUpdate(taskBody._id, taskBody)
               : handleTaskCreate(taskBody)
           "
@@ -204,6 +209,7 @@ import { format } from "date-fns";
 import Loading from "../components/Loading.vue";
 import BtnPriority from "../components/BtnPriority.vue";
 import BtnStatus from "../components/BtnStatus.vue";
+import { useAuth } from "../composables/useAuth.ts";
 export default defineComponent({
   components: { Loading, BtnPriority, BtnStatus },
   props: {
@@ -212,10 +218,19 @@ export default defineComponent({
   setup() {
     const { getProjectTasks, patchTask, addTask } = useTask();
     const { getUser, getUsers } = useUser();
-    return { getProjectTasks, getUser, patchTask, getUsers, addTask };
+    const { getAuthUser } = useAuth();
+    return {
+      getProjectTasks,
+      getUser,
+      patchTask,
+      getUsers,
+      addTask,
+      getAuthUser,
+    };
   },
   data() {
     return {
+      currentUser: "",
       tableKey: 0,
       valid: false,
       tasks: [],
@@ -230,7 +245,7 @@ export default defineComponent({
       selectedTask: null,
       selectedTaskBody: null,
       taskBody: {
-        id: null,
+        id: "",
         name: "",
         description: "",
         dateCreate: "",
@@ -281,21 +296,50 @@ export default defineComponent({
     async onCloseTask() {
       this.taskVisible = false;
       await new Promise((resolve) => setTimeout(resolve, 300));
-      this.selectedTaskBody = null
+      this.selectedTaskBody = null;
       this.selectedTask = null;
+      this.taskBody = {
+        id: "",
+        name: "",
+        description: "",
+        dateCreate: "",
+        ownerInfo: null,
+        owner: "",
+        priority: "",
+        project: "",
+        status: "",
+      };
     },
     handleOpenTask(selectedTask?: any) {
       console.log(selectedTask);
       this.selectedTaskBody = selectedTask;
-      selectedTask ? (this.taskBody = { ...selectedTask }) : null;
+      selectedTask
+        ? (this.taskBody = { ...selectedTask })
+        : {
+            id: null,
+            name: "",
+            description: "",
+            dateCreate: "",
+            ownerInfo: null,
+            owner: "",
+            priority: "",
+            project: "",
+            status: "",
+          };
       this.taskVisible = true;
     },
     async handleTaskCreate(taskBody: any) {
-      console.log(taskBody);
+      taskBody.project = this.id;
+      taskBody.owner = this.currentUser._id;
       try {
         const response: any = await this.addTask(taskBody);
         console.log(response);
         if (response) {
+          const newTask = response.data;
+          newTask.ownerInfo = await this.getUserInfo(response.data.owner);
+          console.log(newTask)
+          this.mappedTasks.push(newTask);
+          this.tableKey += 1;
           this.createToast("Success! Task has been created", "success");
           // this.mappedTasks.push(task);
           // this.tableKey += 1;
@@ -396,6 +440,7 @@ export default defineComponent({
     console.log(this.tasks);
     this.isPageLoading = false;
     this.users = await this.getUserList();
+    this.currentUser = this.getAuthUser();
   },
 });
 </script>
