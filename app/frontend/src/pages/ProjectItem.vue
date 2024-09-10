@@ -11,13 +11,12 @@
       <v-card-title class="flex mb-2">
         <div class="flex">
           <v-chip rounded="lg">project id:{{ id }}</v-chip>
-          <v-chip
-            rounded="lg"
-            color="pink"
-            variant="elevated"
+
+          <BtnStatus
             class="ml-auto"
-            >{{ taskBody.status }}</v-chip
-          >
+            :taskStatus="taskBody.status"
+            @changeStatus="onStatusChangeTaskDialog"
+          />
         </div>
       </v-card-title>
       <div class="flex">
@@ -36,8 +35,12 @@
         <v-col class="mb-6 flex ma-0 pa-0 pl-5" cols="12">
           <v-col cols="4" class="flex"
             ><v-icon icon="mdi mdi-flag-variant mr-0.5" />Priority
-            <BtnPriority class="mr-2 ml-2" :taskPriority="taskBody.priority"
-          /></v-col>
+            <BtnPriority
+              class="mx-2"
+              :taskPriority="taskBody.priority"
+              @changePriority="onPriorityChangeTaskDialog"
+            />
+          </v-col>
           <v-col cols="4" class=""
             ><v-icon icon="mdi mdi-account" /><span class="mr-2">Owner:</span>
             {{ taskBody.ownerInfo[0].email }}</v-col
@@ -67,10 +70,8 @@
               color="surface-variant"
               size="30"
               class="ml-auto mx-2"
-            ></v-avatar>
-            <!-- <BtnStatus class="mx-2" /><BtnStatus class="mx-2" /> -->
-          </div></v-card
-        >
+            ></v-avatar></div
+        ></v-card>
       </div>
       <template v-slot:actions>
         <v-btn class="" text="Cancel" @click="onCloseTask"></v-btn>
@@ -78,7 +79,11 @@
           class="ms-auto"
           text="Create"
           :disabled="!valid"
-          @click="handleTaskUpdate(taskBody._id, taskBody)"
+          @click="
+            taskBody._id
+              ? handleTaskUpdate(taskBody._id, taskBody)
+              : handleTaskCreate(taskBody)
+          "
         ></v-btn>
       </template>
     </v-card>
@@ -134,8 +139,9 @@
         </div>
       </div>
     </v-tabs>
+    <v-btn @click="taskVisible = true">Create</v-btn>
     <div id="tab-container" class="bg-red-200 flex-1">
-      <v-table theme="dark">
+      <v-table theme="dark" :key="tableKey">
         <thead>
           <tr>
             <th class="text-left">Name</th>
@@ -149,19 +155,31 @@
         <tbody class="">
           <tr
             v-for="item in mappedTasks"
-            :key="item.name"
+            :key="item._id"
             class="hover:bg-neutral-800"
             @click="handleOpenTask(item)"
           >
             <td>{{ item.name }}</td>
             <td>{{ item.description }}</td>
             <td>
-              {{ item.priority }}
-              <BtnPriority task-priority :taskPriority="item.priority" />
+              <BtnPriority
+                class="mx-2"
+                :taskPriority="item.priority"
+                :taskId="item._id"
+                @changePriority="onPriorityChangeTask"
+              />
             </td>
 
             <td>{{ formatDate(item.dateCreate, "d MMMM yyyy") }}</td>
-            <td>{{ item.status }}</td>
+            <td>
+              <BtnStatus
+                class=""
+                :taskStatus="item.status"
+                :taskId="item._id"
+                @changeStatus="onStatusChangeTask"
+              />
+            </td>
+
             <td>
               <v-avatar
                 :color="item.ownerInfo[0].color"
@@ -185,21 +203,24 @@ import { enUS } from "date-fns/locale";
 import { format } from "date-fns";
 import Loading from "../components/Loading.vue";
 import BtnPriority from "../components/BtnPriority.vue";
+import BtnStatus from "../components/BtnStatus.vue";
 export default defineComponent({
-  components: { Loading, BtnPriority },
+  components: { Loading, BtnPriority, BtnStatus },
   props: {
     id: { type: String, required: true },
   },
   setup() {
-    const { getProjectTasks, patchTask } = useTask();
-    const { getUser } = useUser();
-    return { getProjectTasks, getUser, patchTask };
+    const { getProjectTasks, patchTask, addTask } = useTask();
+    const { getUser, getUsers } = useUser();
+    return { getProjectTasks, getUser, patchTask, getUsers, addTask };
   },
   data() {
     return {
+      tableKey: 0,
       valid: false,
       tasks: [],
       mappedTasks: [],
+      users: [],
       toastMessage: "",
       showToast: false,
       colorToast: "red",
@@ -234,9 +255,33 @@ export default defineComponent({
 
   computed: {},
   methods: {
+    onStatusChangeTaskDialog(newStatus: any) {
+      this.taskBody.status = newStatus.name;
+    },
+    onPriorityChangeTaskDialog(newPriority: any) {
+      this.taskBody.priority = newPriority.name;
+    },
+    async onStatusChangeTask(newStatus: any, taskId: string) {
+      const body = { status: newStatus.name };
+      const response = await this.handleTaskUpdate(taskId, body);
+      console.log(response);
+      if (response) {
+        this.createToast("Task status has been changed", "success");
+      }
+    },
+    async onPriorityChangeTask(newPriority: any, taskId: string) {
+      const body = { priority: newPriority.name };
+      const response = await this.handleTaskUpdate(taskId, body);
+      console.log(response);
+      if (response) {
+        this.createToast("Task priority has been changed", "success");
+      }
+    },
+
     async onCloseTask() {
       this.taskVisible = false;
       await new Promise((resolve) => setTimeout(resolve, 300));
+      this.selectedTaskBody = null
       this.selectedTask = null;
     },
     handleOpenTask(selectedTask?: any) {
@@ -245,14 +290,46 @@ export default defineComponent({
       selectedTask ? (this.taskBody = { ...selectedTask }) : null;
       this.taskVisible = true;
     },
-    async handleTaskUpdate(taskId, taskBody) {
+    async handleTaskCreate(taskBody: any) {
       console.log(taskBody);
       try {
-        const response: any = await this.patchTask(taskId, taskBody);
+        const response: any = await this.addTask(taskBody);
         console.log(response);
+        if (response) {
+          this.createToast("Success! Task has been created", "success");
+          // this.mappedTasks.push(task);
+          // this.tableKey += 1;
+          this.onCloseTask();
+          return;
+        }
+        this.createToast(
+          "Something went wrong, while creating task. Please try again later..."
+        );
         return response;
       } catch (err) {
-        console.log(error);
+        console.log(err);
+        this.createToast(
+          "Something went wrong, could not create task. Please try again later..."
+        );
+      }
+    },
+    async handleTaskUpdate(taskId: string, taskBody: any) {
+      try {
+        const response: any = await this.patchTask(taskId, taskBody);
+        if (response) {
+          this.createToast("Success! Task has been updated", "success");
+          let task = this.mappedTasks.find((task) => task._id === taskId);
+          Object.assign(task, taskBody);
+          this.tableKey += 1;
+          this.onCloseTask();
+          return;
+        }
+        this.createToast(
+          "Something went wrong, while updating task. Please try again later..."
+        );
+        return response;
+      } catch (err) {
+        console.log(err);
         this.createToast(
           "Something went wrong, could not update task. Please try again later..."
         );
@@ -292,6 +369,21 @@ export default defineComponent({
         return [];
       }
     },
+    async getUserList() {
+      try {
+        const response: any = await this.getUsers();
+        if (!response || response?.length === 0) {
+          return [];
+        }
+        return response;
+      } catch (err) {
+        console.log(err);
+        this.createToast(
+          "Something went wrong, could not get the list of users."
+        );
+        return [];
+      }
+    },
     createToast(message: string, type?: "success" | "error") {
       this.toastMessage = message;
       this.showToast = true;
@@ -303,6 +395,7 @@ export default defineComponent({
     this.mapTaskList();
     console.log(this.tasks);
     this.isPageLoading = false;
+    this.users = await this.getUserList();
   },
 });
 </script>

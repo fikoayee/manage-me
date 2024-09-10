@@ -35,4 +35,12 @@ export class UserServiceImpl implements UserService {
       throw new Error("Could not get the user");
     }
   }
+  async getUsers(): Promise<unknown> {
+    try {
+      const response = await api.get(`${this.SERVICE_PATH_USERS}/all`);
+      return response;
+    } catch (err) {
+      throw new Error("Could not get the list of users");
+    }
+  }
 }

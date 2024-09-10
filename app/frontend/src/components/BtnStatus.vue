@@ -4,12 +4,11 @@
       <template v-slot:activator="{ props }">
         <v-btn
           v-bind="props"
-          variant="tonal"
-          :color="currentPriority.color"
+          :color="currentStatus.color"
           class="w-[90px]"
           size="small"
         >
-          {{ currentPriority.name }}
+          {{ currentStatus.name }}
           <i
             class="fa-solid fa-play fa-xs ml-1 pb-0.5"
             :class="menuIsOpen ? 'fa-rotate-90' : `fa-rotate-120 pt-1`"
@@ -18,19 +17,18 @@
       </template>
       <v-list>
         <v-list-item
-          v-for="(priority, index) in priorities"
+          v-for="(status, index) in statuses"
           :key="index"
           :value="index"
           class="overflow-hidden"
         >
           <v-btn
-            v-if="currentPriority.name !== priority.name"
+            v-if="currentStatus.name !== status.name"
             class="w-full"
             size="small"
-            variant="tonal"
-            :color="priority.color"
-            @click="handleSelect(priority)"
-            >{{ priority.name }}</v-btn
+            :color="status.color"
+            @click="handleSelect(status)"
+            >{{ status.name }}</v-btn
           >
         </v-list-item>
       </v-list>
@@ -39,41 +37,42 @@
 </template>
 <script lang="ts">
 import { defineComponent } from "vue";
-import { PRIORITIES } from "../constants/priority.data.ts";
+import { STATUSES } from "../constants/status.data.ts";
 
-interface IPriority {
+interface IStatus {
   name: string;
   color: string;
 }
 
 export default defineComponent({
-  props: ["taskPriority", "taskId"],
+  props: ["taskStatus", "taskId"],
   data: () => {
     return {
-      currentPriority: PRIORITIES.HIGH,
-      priorities: PRIORITIES,
+      currentStatus: STATUSES.TODO,
+      statuses: STATUSES,
       menuIsOpen: false,
     };
   },
   methods: {
-    handleSelect(selectedPriority: any) {
-      this.currentPriority = selectedPriority;
-      this.$emit("changePriority", this.currentPriority, this.taskId);
+    handleSelect(selectedStatus: any) {
+      this.currentStatus = selectedStatus;
+      this.$emit("changeStatus", this.currentStatus, this.taskId);
     },
-    setPriorityStyle(priorityName: string) {
-      switch (priorityName) {
-        case PRIORITIES.LOW.name:
-          return PRIORITIES.LOW;
-        case PRIORITIES.MEDIUM.name:
-          return PRIORITIES.MEDIUM;
-        case PRIORITIES.HIGH.name:
-          return PRIORITIES.HIGH;
+    setPriorityStyle(statusName: string) {
+      switch (statusName) {
+        case STATUSES.TODO.name:
+          return STATUSES.TODO;
+        case STATUSES.DOING.name:
+          return STATUSES.DOING;
+        case STATUSES.DONE.name:
+          return STATUSES.DONE;
       }
     },
   },
   mounted() {
-    this.currentPriority =
-      this.setPriorityStyle(this.taskPriority) || PRIORITIES.HIGH;
+    this.currentStatus =
+      this.setPriorityStyle(this.taskStatus) || STATUSES.TODO;
+    console.log(this.taskStatus);
   },
 });
 </script>
