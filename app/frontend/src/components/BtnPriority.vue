@@ -3,6 +3,7 @@
     <v-menu v-model="menuIsOpen">
       <template v-slot:activator="{ props }">
         <v-btn
+          :disabled="isAvailable"
           v-bind="props"
           variant="tonal"
           :color="currentPriority.color"
@@ -47,7 +48,7 @@ interface IPriority {
 }
 
 export default defineComponent({
-  props: ["taskPriority", "taskId"],
+  props: ["taskPriority", "taskId", "isAvailable"],
   data: () => {
     return {
       currentPriority: PRIORITIES.HIGH,

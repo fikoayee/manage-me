@@ -15,6 +15,7 @@
           <BtnStatus
             class="ml-auto"
             :taskStatus="taskBody.status"
+            :isAvailable="!validatePrivileges(taskBody.owner)"
             @changeStatus="onStatusChangeTaskDialog"
           />
         </div>
@@ -22,6 +23,7 @@
       <div class="flex">
         <v-form v-model="valid" class="w-full">
           <v-text-field
+            :disabled="!validatePrivileges(taskBody.owner)"
             :rules="[rules.nameMinMaxLength]"
             v-model="taskBody.name"
             label="Name"
@@ -38,6 +40,7 @@
             <BtnPriority
               class="mx-2"
               :taskPriority="taskBody.priority"
+              :isAvailable="!validatePrivileges(taskBody.owner)"
               @changePriority="onPriorityChangeTaskDialog"
             />
           </v-col>
@@ -59,6 +62,7 @@
         </v-col>
       </v-row>
       <v-textarea
+        :disabled="!validatePrivileges(taskBody.owner)"
         v-model="taskBody.description"
         label="Description"
         rounded="lg"
@@ -83,7 +87,7 @@
         <v-btn
           class="ms-auto"
           :text="taskBody._id ? 'Edit' : 'Create'"
-          :disabled="!valid"
+          :disabled="!valid || !validatePrivileges(taskBody.owner)"
           @click="
             taskBody.id
               ? handleTaskUpdate(taskBody._id, taskBody)
@@ -93,60 +97,49 @@
       </template>
     </v-card>
   </v-dialog>
-  <div class="bg-blue-100 h-full flex flex-col">
-    <v-tabs
-      v-model="tab"
-      height="48"
-      align-tabs="center"
-      color=""
-      elevation="24"
-      class="bg-neutral-900 w-fit pt-1.5 mb-2 rounded-[24px] mx-auto"
-    >
-      <div class="flex w-full">
-        <div class="ml-1.5">
-          <v-chip
-            :value="3"
-            :variant="tab === 1 ? 'tonal' : 'text'"
-            :color="tab === 1 ? 'purple-accent-1' : 'black'"
-            class="tab-chip text-white px-8"
-            density="comfortable"
-            size="large"
-            @click="tab = 1"
-          >
-            Overview</v-chip
-          >
+  <div class="h-full flex flex-col px-4">
+    <div>
+      <v-tabs
+        v-model="tab"
+        height="48"
+        align-tabs="center"
+        color=""
+        elevation="24"
+        class="bg-neutral-900 w-fit pt-1.5 mb-2 rounded-[24px] mx-auto mt-2"
+      >
+        <div class="flex w-full">
+          <div class="ml-1.5">
+            <v-chip
+              :value="1"
+              :variant="tab === 1 ? 'tonal' : 'text'"
+              :color="tab === 1 ? 'purple-accent-1' : 'black'"
+              class="tab-chip text-white px-8"
+              density="comfortable"
+              size="large"
+              @click="tab = 1"
+            >
+              Tasks</v-chip
+            >
+          </div>
+          <div class="flex justify-center">
+            <v-chip
+              :value="2"
+              :variant="tab === 2 ? 'tonal' : 'text'"
+              :color="tab === 2 ? 'purple-accent-1' : 'black'"
+              class="tab-chip mr-1.5 text-white px-8"
+              density="comfortable"
+              size="large"
+              @click="tab = 2"
+            >
+              Subtasks</v-chip
+            >
+          </div>
         </div>
-        <div class="flex justify-center">
-          <v-chip
-            :value="3"
-            :variant="tab === 2 ? 'tonal' : 'text'"
-            :color="tab === 2 ? 'purple-accent-1' : 'black'"
-            class="tab-chip mr-1.5 text-white px-8"
-            density="comfortable"
-            size="large"
-            @click="tab = 2"
-          >
-            Stories</v-chip
-          >
-        </div>
-        <div class="flex justify-center">
-          <v-chip
-            :value="3"
-            :variant="tab === 3 ? 'tonal' : 'text'"
-            :color="tab === 3 ? 'purple-accent-1' : 'black'"
-            class="tab-chip mr-1.5 text-white px-8"
-            density="comfortable"
-            size="large"
-            @click="tab = 3"
-          >
-            Tasks</v-chip
-          >
-        </div>
-      </div>
-    </v-tabs>
-    <v-btn @click="taskVisible = true">Create</v-btn>
-    <div id="tab-container" class="bg-red-200 flex-1">
-      <v-table theme="dark" :key="tableKey">
+      </v-tabs>
+    </div>
+    <div v-if="tab === 1" class="">
+      <v-card class="h-4 rounded-b-0 rounded-t-xl" theme="dark" flat></v-card>
+      <v-table theme="dark" :key="tableKey" class="">
         <thead>
           <tr>
             <th class="text-left">Name</th>
@@ -171,6 +164,7 @@
                 class="mx-2"
                 :taskPriority="item.priority"
                 :taskId="item._id"
+                :isAvailable="!validatePrivileges(item.owner)"
                 @changePriority="onPriorityChangeTask"
               />
             </td>
@@ -181,6 +175,7 @@
                 class=""
                 :taskStatus="item.status"
                 :taskId="item._id"
+                :isAvailable="!validatePrivileges(item.owner)"
                 @changeStatus="onStatusChangeTask"
               />
             </td>
@@ -196,6 +191,14 @@
           </tr>
         </tbody>
       </v-table>
+      <v-card class="h-4 rounded-b-xl rounded-t-0" theme="dark" flat></v-card>
+    </div>
+    <div v-if="tab === 2" class="bg-blue h-full flex flex-col">
+      <v-row no-gutters>
+        <v-col cols="4" class="bg-green"></v-col>
+        <v-col cols="4" class="bg-yellow"></v-col>
+        <v-col cols="4" class="bg-red flex-1"></v-col>
+      </v-row>
     </div>
   </div>
 </template>
@@ -270,6 +273,15 @@ export default defineComponent({
 
   computed: {},
   methods: {
+    validatePrivileges(ownerId: string) {
+      if (!ownerId) {
+        return true;
+      }
+
+      return (
+        this.currentUser.role === "admin" || this.currentUser._id === ownerId
+      );
+    },
     onStatusChangeTaskDialog(newStatus: any) {
       this.taskBody.status = newStatus.name;
     },
@@ -337,7 +349,7 @@ export default defineComponent({
         if (response) {
           const newTask = response.data;
           newTask.ownerInfo = await this.getUserInfo(response.data.owner);
-          console.log(newTask)
+          console.log(newTask);
           this.mappedTasks.push(newTask);
           this.tableKey += 1;
           this.createToast("Success! Task has been created", "success");

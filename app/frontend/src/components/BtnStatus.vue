@@ -3,6 +3,7 @@
     <v-menu v-model="menuIsOpen">
       <template v-slot:activator="{ props }">
         <v-btn
+             :disabled="isAvailable"
           v-bind="props"
           :color="currentStatus.color"
           class="w-[90px]"
@@ -45,7 +46,7 @@ interface IStatus {
 }
 
 export default defineComponent({
-  props: ["taskStatus", "taskId"],
+  props: ["taskStatus", "taskId", "isAvailable"],
   data: () => {
     return {
       currentStatus: STATUSES.TODO,
