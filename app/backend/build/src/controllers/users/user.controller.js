@@ -26,10 +26,16 @@ exports.UserController = void 0;
 const tsoa_1 = require("tsoa");
 const auth_1 = require("../../middlewares/auth");
 const get_user_impl_1 = __importDefault(require("./implementation/get-user.impl"));
+const get_users_impl_1 = __importDefault(require("./implementation/get-users.impl"));
 let UserController = class UserController extends tsoa_1.Controller {
-    getProjectTasks(req, userId) {
+    getUser(req, userId) {
         return __awaiter(this, void 0, void 0, function* () {
             return (0, get_user_impl_1.default)(userId);
+        });
+    }
+    getUsers(req) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return (0, get_users_impl_1.default)();
         });
     }
 };
@@ -39,7 +45,12 @@ __decorate([
     (0, tsoa_1.Middlewares)([auth_1.authenticate]),
     __param(0, (0, tsoa_1.Request)()),
     __param(1, (0, tsoa_1.Path)())
-], UserController.prototype, "getProjectTasks", null);
+], UserController.prototype, "getUser", null);
+__decorate([
+    (0, tsoa_1.Get)("/all"),
+    (0, tsoa_1.Middlewares)([auth_1.authenticate]),
+    __param(0, (0, tsoa_1.Request)())
+], UserController.prototype, "getUsers", null);
 exports.UserController = UserController = __decorate([
     (0, tsoa_1.Route)("users")
 ], UserController);

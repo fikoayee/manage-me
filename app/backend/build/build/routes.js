@@ -50,7 +50,7 @@ function RegisterRoutes(app) {
     //  NOTE: If you do not see routes for all of your controllers in this file, then you might not have informed tsoa of where to look
     //      Please look into the "controllerPathGlobs" config option described in the readme: https://github.com/lukeautry/tsoa
     // ###########################################################################################################
-    app.get('/users/user/:userId', ...((0, runtime_1.fetchMiddlewares)(user_controller_1.UserController)), ...((0, runtime_1.fetchMiddlewares)(user_controller_1.UserController.prototype.getProjectTasks)), function UserController_getProjectTasks(request, response, next) {
+    app.get('/users/user/:userId', ...((0, runtime_1.fetchMiddlewares)(user_controller_1.UserController)), ...((0, runtime_1.fetchMiddlewares)(user_controller_1.UserController.prototype.getUser)), function UserController_getUser(request, response, next) {
         return __awaiter(this, void 0, void 0, function* () {
             const args = {
                 req: { "in": "request", "name": "req", "required": true, "dataType": "object" },
@@ -62,7 +62,32 @@ function RegisterRoutes(app) {
                 validatedArgs = templateService.getValidatedArgs({ args, request, response });
                 const controller = new user_controller_1.UserController();
                 yield templateService.apiHandler({
-                    methodName: 'getProjectTasks',
+                    methodName: 'getUser',
+                    controller,
+                    response,
+                    next,
+                    validatedArgs,
+                    successStatus: undefined,
+                });
+            }
+            catch (err) {
+                return next(err);
+            }
+        });
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    app.get('/users/all', ...((0, runtime_1.fetchMiddlewares)(user_controller_1.UserController)), ...((0, runtime_1.fetchMiddlewares)(user_controller_1.UserController.prototype.getUsers)), function UserController_getUsers(request, response, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const args = {
+                req: { "in": "request", "name": "req", "required": true, "dataType": "object" },
+            };
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+            let validatedArgs = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+                const controller = new user_controller_1.UserController();
+                yield templateService.apiHandler({
+                    methodName: 'getUsers',
                     controller,
                     response,
                     next,

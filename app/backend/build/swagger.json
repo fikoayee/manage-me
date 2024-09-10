@@ -77,7 +77,7 @@
 	"paths": {
 		"/users/user/{userId}": {
 			"get": {
-				"operationId": "GetProjectTasks",
+				"operationId": "GetUser",
 				"responses": {
 					"200": {
 						"description": "Ok",
@@ -99,6 +99,23 @@
 						}
 					}
 				]
+			}
+		},
+		"/users/all": {
+			"get": {
+				"operationId": "GetUsers",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
 			}
 		},
 		"/tasks/task": {
