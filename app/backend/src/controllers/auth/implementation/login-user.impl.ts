@@ -19,9 +19,9 @@ const login = async (loginBody: loginBody): Promise<any> => {
 
   const token = jwt.sign(
     { userId: user._id, email: user.email },
-    '8f6e27b1e3d6e1a9170fc3cba5d8c4e0b22e5f92f9b7f8246c5c2e4b5ed2f89ef',
+    "8f6e27b1e3d6e1a9170fc3cba5d8c4e0b22e5f92f9b7f8246c5c2e4b5ed2f89ef",
     { expiresIn: "1h" }
   );
-  return token;
+  return { token: token, user: user };
 };
 export default login;
