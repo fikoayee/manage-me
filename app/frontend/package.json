@@ -13,6 +13,7 @@
     "axios": "^1.7.5",
     "date-fns": "^3.6.0",
     "vue": "^3.4.31",
+    "vue-draggable-next": "^2.2.1",
     "vue-router": "^4.4.3"
   },
   "devDependencies": {

@@ -193,11 +193,46 @@
       </v-table>
       <v-card class="h-4 rounded-b-xl rounded-t-0" theme="dark" flat></v-card>
     </div>
-    <div v-if="tab === 2" class="bg-blue h-full flex flex-col">
+    <div v-if="tab === 2" class="h-full flex flex-col">
       <v-row no-gutters>
-        <v-col cols="4" class="bg-green"></v-col>
-        <v-col cols="4" class="bg-yellow"></v-col>
-        <v-col cols="4" class="bg-red flex-1"></v-col>
+        <v-col v-for="column in columns" :key="column.id" cols="4" class="px-1">
+          <v-card :title="column.title" theme="dark" class="mb-2"></v-card>
+          <div class="h-full bg-[#303030] py-1 px-1 rounded-lg">
+            <!-- Użycie VueDraggableNext dla każdej kolumny -->
+            <VueDraggableNext
+              :animation="200"
+              ghost-class="ghost-card"
+              group="tasks"
+              :list="getSubtasksByStatus(column.status)"
+            >
+              <v-card
+                v-for="item in getSubtasksByStatus(column.status)"
+                :key="item._id"
+                theme="dark"
+                class="mb-2"
+              >
+                <v-card-title>{{ item.name }}</v-card-title>
+                <v-card-subtitle>{{ item.description }}</v-card-subtitle>
+                <v-card-text>
+                  <div class="flex items-center space-x-2 overflow-hidden">
+                    <BtnPriority
+                      class=""
+                      :taskPriority="item.priority"
+                      :taskId="item._id"
+                      :isAvailable="true"
+                      @changePriority="changeTest(item._id)"
+                    />
+                    <v-avatar color="red" class="text-xl capitalize">
+                      {{ item.assignedUserInitial }}
+                    </v-avatar>
+                    <!-- <p class="ml-auto">{{ formatDate(item.time) }}</p> -->
+                    <p class="ml-auto">asd</p>
+                  </div>
+                </v-card-text>
+              </v-card>
+            </VueDraggableNext>
+          </div>
+        </v-col>
       </v-row>
     </div>
   </div>
@@ -207,14 +242,16 @@
 import { defineComponent } from "vue";
 import { useTask } from "../composables/useTask.ts";
 import { useUser } from "../composables/useUser.ts";
+import { useAuth } from "../composables/useAuth.ts";
 import { enUS } from "date-fns/locale";
 import { format } from "date-fns";
 import Loading from "../components/Loading.vue";
 import BtnPriority from "../components/BtnPriority.vue";
 import BtnStatus from "../components/BtnStatus.vue";
-import { useAuth } from "../composables/useAuth.ts";
+import { VueDraggableNext } from "vue-draggable-next";
+
 export default defineComponent({
-  components: { Loading, BtnPriority, BtnStatus },
+  components: { Loading, BtnPriority, BtnStatus, VueDraggableNext },
   props: {
     id: { type: String, required: true },
   },
@@ -268,6 +305,54 @@ export default defineComponent({
           );
         },
       },
+      subtasks: [
+        {
+          _id: "1",
+          name: "Subtask 1",
+          description: "Opis subtaska 1",
+          priority: "LOW",
+          task: "1",
+          time: "2024-09-12T10:00:00",
+          status: "TODO",
+          assignedUserInitial: "A",
+        },
+        {
+          _id: "2",
+          name: "Subtask 2",
+          description: "Opis subtaska 2",
+          priority: "MEDIUM",
+          task: "1",
+          time: "2024-09-13T10:00:00",
+          status: "IN_PROGRESS",
+          assignedUserInitial: "B",
+        },
+        {
+          _id: "3",
+          name: "Subtask 3",
+          description: "Opis subtaska 3",
+          priority: "HIGH",
+          task: "1",
+          time: "2024-09-14T10:00:00",
+          status: "DONE",
+          assignedUserInitial: "C",
+        },
+        {
+          _id: "4",
+          name: "Subtask 4",
+          description: "Opis subtaska 4",
+          priority: "LOW",
+          task: "2",
+          time: "2024-09-15T10:00:00",
+          status: "TODO",
+          assignedUserInitial: "D",
+        },
+      ],
+
+      columns: [
+        { id: 1, title: "To Do", status: "TODO" },
+        { id: 2, title: "In Progress", status: "IN_PROGRESS" },
+        { id: 3, title: "Done", status: "DONE" },
+      ],
     };
   },
 
@@ -445,6 +530,17 @@ export default defineComponent({
       this.showToast = true;
       this.colorToast = type === "success" ? "#34d19a" : "red-accent-2";
     },
+
+    // subtasks
+    getSubtasksByStatus(status: any) {
+      return this.subtasks.filter((subtask) => subtask.status === status);
+    },
+    changeTest(subtaskId, newPriority) {
+      const subtask = this.subtasks.find((item) => item._id === subtaskId);
+      if (subtask) {
+        subtask.priority = newPriority;
+      }
+    },
   },
   async mounted() {
     this.tasks = await this.getTasksList();
@@ -477,5 +573,11 @@ export default defineComponent({
   box-shadow: inset 0px 0px 10px 10px #d4d4d4;
   border: solid 4px transparent;
   border-radius: 100px;
+}
+/* subtasks */
+.ghost-card {
+  opacity: 0.5;
+  background: #f7fafc;
+  border: 1px solid #4299e1;
 }
 </style>
