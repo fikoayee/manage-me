@@ -21,60 +21,58 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TaskController = void 0;
+exports.SubtaskController = void 0;
 // src/users/usersController.ts
 const tsoa_1 = require("tsoa");
 const auth_1 = require("../../middlewares/auth");
-const add_task_impl_1 = __importDefault(require("./implementation/add-task.impl"));
-const get_project_tasks_impl_1 = __importDefault(require("./implementation/get-project-tasks.impl"));
-const patch_task_impl_1 = __importDefault(require("./implementation/patch-task.impl"));
-const delete_task_impl_1 = __importDefault(require("./implementation/delete-task.impl"));
-let TaskController = class TaskController extends tsoa_1.Controller {
-    addTask(addTaskBody) {
+const delete_subtask_impl_1 = __importDefault(require("../../controllers/subtasks/implementation/delete-subtask.impl"));
+const patch_subtask_impl_1 = __importDefault(require("../../controllers/subtasks/implementation/patch-subtask.impl"));
+const get_task_subtasks_impl_1 = __importDefault(require("../../controllers/subtasks/implementation/get-task-subtasks.impl"));
+const add_task_impl_1 = __importDefault(require("../../controllers/subtasks/implementation/add-subtask.impl"));
+let SubtaskController = class SubtaskController extends tsoa_1.Controller {
+    addSubtask(addSubtaskBody) {
         return __awaiter(this, void 0, void 0, function* () {
-            return (0, add_task_impl_1.default)(addTaskBody);
+            return (0, add_task_impl_1.default)(addSubtaskBody);
         });
     }
-    getProjectTasks(projectId) {
+    getTaskSubtasks(taskId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return (0, get_project_tasks_impl_1.default)(projectId);
+            return (0, get_task_subtasks_impl_1.default)(taskId);
         });
     }
-    patchTask(req, taskId, patchTaskBody) {
+    patchSubtask(subtaskId, patchSubtaskBody) {
         return __awaiter(this, void 0, void 0, function* () {
-            return (0, patch_task_impl_1.default)(req.user.userId, taskId, patchTaskBody);
+            return (0, patch_subtask_impl_1.default)(subtaskId, patchSubtaskBody);
         });
     }
-    deleteTask(req, taskId) {
+    deleteTask(subtaskId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return (0, delete_task_impl_1.default)(req.user.userId, taskId);
+            return (0, delete_subtask_impl_1.default)(subtaskId);
         });
     }
 };
-exports.TaskController = TaskController;
+exports.SubtaskController = SubtaskController;
 __decorate([
-    (0, tsoa_1.Post)("/task"),
+    (0, tsoa_1.Post)("/subtask"),
     (0, tsoa_1.Middlewares)([auth_1.authenticate]),
     __param(0, (0, tsoa_1.Body)())
-], TaskController.prototype, "addTask", null);
+], SubtaskController.prototype, "addSubtask", null);
 __decorate([
-    (0, tsoa_1.Get)("/project/{projectId}"),
+    (0, tsoa_1.Get)("/task/all"),
+    (0, tsoa_1.Middlewares)([auth_1.authenticate]),
+    __param(0, (0, tsoa_1.Query)("taskId"))
+], SubtaskController.prototype, "getTaskSubtasks", null);
+__decorate([
+    (0, tsoa_1.Patch)("subtask/{subtaskId}"),
+    (0, tsoa_1.Middlewares)([auth_1.authenticate]),
+    __param(0, (0, tsoa_1.Path)()),
+    __param(1, (0, tsoa_1.Body)())
+], SubtaskController.prototype, "patchSubtask", null);
+__decorate([
+    (0, tsoa_1.Delete)("/subtask/{subtaskId}"),
     (0, tsoa_1.Middlewares)([auth_1.authenticate]),
     __param(0, (0, tsoa_1.Path)())
-], TaskController.prototype, "getProjectTasks", null);
-__decorate([
-    (0, tsoa_1.Patch)("/task/{taskId}"),
-    (0, tsoa_1.Middlewares)([auth_1.authenticate]),
-    __param(0, (0, tsoa_1.Request)()),
-    __param(1, (0, tsoa_1.Path)()),
-    __param(2, (0, tsoa_1.Body)())
-], TaskController.prototype, "patchTask", null);
-__decorate([
-    (0, tsoa_1.Delete)("/task/{taskId}"),
-    (0, tsoa_1.Middlewares)([auth_1.authenticate]),
-    __param(0, (0, tsoa_1.Request)()),
-    __param(1, (0, tsoa_1.Path)())
-], TaskController.prototype, "deleteTask", null);
-exports.TaskController = TaskController = __decorate([
-    (0, tsoa_1.Route)("tasks")
-], TaskController);
+], SubtaskController.prototype, "deleteTask", null);
+exports.SubtaskController = SubtaskController = __decorate([
+    (0, tsoa_1.Route)("subtasks")
+], SubtaskController);

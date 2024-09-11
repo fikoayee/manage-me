@@ -10,6 +10,7 @@ import {
   Delete,
   Middlewares,
   Request,
+  Query,
 } from "tsoa";
 import { authenticate } from "../../middlewares/auth";
 import deleteSubtask from "./implementation/delete-subtask.impl";
@@ -18,7 +19,7 @@ import getTaskSubtasks from "./implementation/get-task-subtasks.impl";
 import addTask from "controllers/tasks/implementation/add-task.impl";
 
 @Route("subtasks")
-export class TaskController extends Controller {
+export class SubtaskController extends Controller {
   @Post("/subtask")
   @Middlewares([authenticate])
   public async addSubtask(@Body() addSubtaskBody: any): Promise<unknown> {
@@ -26,7 +27,7 @@ export class TaskController extends Controller {
   }
   @Get("/task/all")
   @Middlewares([authenticate])
-  public async getTaskSubtasks(@Path() taskId: string[]): Promise<unknown> {
+  public async getTaskSubtasks(@Query("taskId") taskId: string[]): Promise<unknown> {
     return getTaskSubtasks(taskId);
   }
   @Patch("subtask/{subtaskId}")

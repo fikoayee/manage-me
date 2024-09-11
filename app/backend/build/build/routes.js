@@ -19,6 +19,8 @@ const user_controller_1 = require("./../src/controllers/users/user.controller");
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 const task_controller_1 = require("./../src/controllers/tasks/task.controller");
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+const subtask_controller_1 = require("./../src/controllers/subtasks/subtask.controller");
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 const project_controller_1 = require("./../src/controllers/projects/project.controller");
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 const auth_controller_1 = require("./../src/controllers/auth/auth.controller");
@@ -183,13 +185,113 @@ function RegisterRoutes(app) {
             const args = {
                 req: { "in": "request", "name": "req", "required": true, "dataType": "object" },
                 taskId: { "in": "path", "name": "taskId", "required": true, "dataType": "string" },
-                patchTaskBody: { "in": "body", "name": "patchTaskBody", "required": true, "dataType": "any" },
             };
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
             let validatedArgs = [];
             try {
                 validatedArgs = templateService.getValidatedArgs({ args, request, response });
                 const controller = new task_controller_1.TaskController();
+                yield templateService.apiHandler({
+                    methodName: 'deleteTask',
+                    controller,
+                    response,
+                    next,
+                    validatedArgs,
+                    successStatus: undefined,
+                });
+            }
+            catch (err) {
+                return next(err);
+            }
+        });
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    app.post('/subtasks/subtask', ...((0, runtime_1.fetchMiddlewares)(subtask_controller_1.SubtaskController)), ...((0, runtime_1.fetchMiddlewares)(subtask_controller_1.SubtaskController.prototype.addSubtask)), function SubtaskController_addSubtask(request, response, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const args = {
+                addSubtaskBody: { "in": "body", "name": "addSubtaskBody", "required": true, "dataType": "any" },
+            };
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+            let validatedArgs = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+                const controller = new subtask_controller_1.SubtaskController();
+                yield templateService.apiHandler({
+                    methodName: 'addSubtask',
+                    controller,
+                    response,
+                    next,
+                    validatedArgs,
+                    successStatus: undefined,
+                });
+            }
+            catch (err) {
+                return next(err);
+            }
+        });
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    app.get('/subtasks/task/all', ...((0, runtime_1.fetchMiddlewares)(subtask_controller_1.SubtaskController)), ...((0, runtime_1.fetchMiddlewares)(subtask_controller_1.SubtaskController.prototype.getTaskSubtasks)), function SubtaskController_getTaskSubtasks(request, response, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const args = {
+                taskId: { "in": "query", "name": "taskId", "required": true, "dataType": "array", "array": { "dataType": "string" } },
+            };
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+            let validatedArgs = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+                const controller = new subtask_controller_1.SubtaskController();
+                yield templateService.apiHandler({
+                    methodName: 'getTaskSubtasks',
+                    controller,
+                    response,
+                    next,
+                    validatedArgs,
+                    successStatus: undefined,
+                });
+            }
+            catch (err) {
+                return next(err);
+            }
+        });
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    app.patch('/subtasks/subtask/:subtaskId', ...((0, runtime_1.fetchMiddlewares)(subtask_controller_1.SubtaskController)), ...((0, runtime_1.fetchMiddlewares)(subtask_controller_1.SubtaskController.prototype.patchSubtask)), function SubtaskController_patchSubtask(request, response, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const args = {
+                subtaskId: { "in": "path", "name": "subtaskId", "required": true, "dataType": "string" },
+                patchSubtaskBody: { "in": "body", "name": "patchSubtaskBody", "required": true, "dataType": "any" },
+            };
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+            let validatedArgs = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+                const controller = new subtask_controller_1.SubtaskController();
+                yield templateService.apiHandler({
+                    methodName: 'patchSubtask',
+                    controller,
+                    response,
+                    next,
+                    validatedArgs,
+                    successStatus: undefined,
+                });
+            }
+            catch (err) {
+                return next(err);
+            }
+        });
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    app.delete('/subtasks/subtask/:subtaskId', ...((0, runtime_1.fetchMiddlewares)(subtask_controller_1.SubtaskController)), ...((0, runtime_1.fetchMiddlewares)(subtask_controller_1.SubtaskController.prototype.deleteTask)), function SubtaskController_deleteTask(request, response, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const args = {
+                subtaskId: { "in": "path", "name": "subtaskId", "required": true, "dataType": "string" },
+            };
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+            let validatedArgs = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+                const controller = new subtask_controller_1.SubtaskController();
                 yield templateService.apiHandler({
                     methodName: 'deleteTask',
                     controller,
