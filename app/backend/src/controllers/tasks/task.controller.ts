@@ -46,7 +46,6 @@ export class TaskController extends Controller {
   public async deleteTask(
     @Request() req: AuthRequest,
     @Path() taskId: string,
-    @Body() patchTaskBody: any
   ): Promise<unknown> {
     return deleteTask(req.user.userId, taskId);
   }
