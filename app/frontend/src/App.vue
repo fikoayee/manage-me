@@ -32,7 +32,7 @@
         </div>
       </template>
     </v-navigation-drawer>
-    <v-main 
+    <v-main
       :class="themeState.isDarkTheme ? 'bg-neutral-800' : 'bg-neutral-300'"
     >
       <RouterView
@@ -74,6 +74,7 @@ export default defineComponent({
     },
     toggleTheme() {
       this.themeState.isDarkTheme = !this.themeState.isDarkTheme;
+      localStorage.setItem("isDarkTheme", String(this.themeState.isDarkTheme));
     },
   },
   computed: {
