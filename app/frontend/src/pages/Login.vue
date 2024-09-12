@@ -130,7 +130,6 @@ export default defineComponent({
           this.createToast("Invalid Credentials");
         }
       } catch (error) {
-        console.log(error);
         this.createToast(
           "Something went wrong, could not login. Please try again later..."
         );

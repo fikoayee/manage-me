@@ -9,7 +9,6 @@ export class AuthServiceImpl implements AuthService {
         `${this.SERVICE_PATH_AUTH}/login`,
         loginBody
       );
-      console.log(response);
       return response;
     } catch (err) {
       throw new Error("Could not login user.");

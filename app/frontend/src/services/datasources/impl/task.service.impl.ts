@@ -1,60 +1,55 @@
-import api from "../../../services/infrastructure/axios-config"; 
-import { SubtaskService } from "../subtask.service"; 
+import api from "../../../services/infrastructure/axios-config";
 
-export class SubtaskServiceImpl implements SubtaskService {
-  private SERVICE_PATH_SUBTASKS = "/subtasks";
+import { TaskService } from "../task.service";
+export class TaskServiceImpl implements TaskService {
+  private SERVICE_PATH_TASKS = "/tasks";
 
-
-  async addSubtask(subtaskBody: any): Promise<unknown> {
+  async addTask(taskBody: any): Promise<unknown> {
+    taskBody.dateCreate = new Date();
+    taskBody.status = taskBody.status? taskBody.status : 'todo' 
+    taskBody.priority = taskBody.priority? taskBody.priority : 'high' 
     try {
-      const response = await api.post(
-        `${this.SERVICE_PATH_SUBTASKS}/subtask`,
-        subtaskBody
+      const respnse = await api.post(
+        `${this.SERVICE_PATH_TASKS}/task`,
+        taskBody
       );
-      return response.data; 
+      return respnse;
     } catch (err) {
-      console.error(err);
-      throw new Error("Could not add subtask.");
+      throw new Error("Could not add task.");
     }
   }
 
-  async getSubtasksByTaskIds(taskIds: string[]): Promise<unknown> {
+  async getProjectTasks(projectId: string): Promise<unknown> {
     try {
       const response = await api.get(
-        `${this.SERVICE_PATH_SUBTASKS}/task/all`,
-        { params: { taskId: taskIds } } 
+        `${this.SERVICE_PATH_TASKS}/project/${projectId}`
       );
-      return response.data;
+      return response;
     } catch (err) {
-      console.error(err);
-      throw new Error("Could not get subtasks for specified tasks.");
+      throw new Error("Could not get tasks for specified project");
     }
   }
 
-
-  async patchSubtask(subtaskId: string, patchBody: any): Promise<unknown> {
+  async patchTask(taskId: string, patchBody: any): Promise<unknown> {
     try {
       const response = await api.patch(
-        `${this.SERVICE_PATH_SUBTASKS}/subtask/${subtaskId}`,
+        `${this.SERVICE_PATH_TASKS}/task/${taskId}`,
         patchBody
       );
-      return response.data;
+      return response;
     } catch (err) {
-      console.error(err);
-      throw new Error("Could not patch the subtask.");
+      throw new Error("Could not patch the task");
     }
   }
 
-
-  async deleteSubtask(subtaskId: string): Promise<unknown> {
+  async deleteTask(taskId: string): Promise<unknown> {
     try {
-      const response = await api.delete(
-        `${this.SERVICE_PATH_SUBTASKS}/subtask/${subtaskId}`
+      const response = await api.patch(
+        `${this.SERVICE_PATH_TASKS}/task/${taskId}`
       );
-      return response.data;
+      return response;
     } catch (err) {
-      console.error(err);
-      throw new Error("Could not delete the subtask.");
+      throw new Error("Could not delete the task");
     }
   }
 }

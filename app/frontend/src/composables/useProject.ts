@@ -21,7 +21,6 @@ export const useProject = () => {
         projectId,
         projectBody
       );
-      console.log(response)
       return response;
     } catch (error) {
       return null;
@@ -46,7 +45,6 @@ export const useProject = () => {
   const getProjects = async () => {
     try {
       const response = await projectService.getProjects();
-      console.log(response)
       return response.projects;
     } catch (error) {
       return null;

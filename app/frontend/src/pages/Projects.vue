@@ -267,7 +267,6 @@ export default defineComponent({
         }
         return response;
       } catch (error) {
-        console.log(error);
         this.createToast(
           "Something went wrong, could not get projects. Please try again later..."
         );
@@ -278,7 +277,6 @@ export default defineComponent({
       this.actionBtnLoading = true;
       try {
         const response = await this.deleteProject(projectId);
-        console.log(response);
         if (response) {
           this.createToast("Success! Project has been removed.", "success");
           this.projects = this.projects.filter((p) => p._id !== projectId);
@@ -288,7 +286,6 @@ export default defineComponent({
           );
         }
       } catch (err) {
-        console.log(err);
         this.createToast(
           "Something went wrong, could not delete project. Please try again later..."
         );
@@ -311,7 +308,6 @@ export default defineComponent({
           );
         }
       } catch (error) {
-        console.log(error);
         this.createToast(
           "Something went wrong, could not update project. Please try again later..."
         );
@@ -334,7 +330,6 @@ export default defineComponent({
           );
         }
       } catch (err) {
-        console.log(err);
         this.createToast(
           "Something went wrong, could not create project. Please try again later..."
         );
@@ -347,7 +342,6 @@ export default defineComponent({
   },
   async mounted() {
     this.projects = await this.getProjects();
-    console.log(this.projects);
     this.isPageLoading = false;
   },
 });

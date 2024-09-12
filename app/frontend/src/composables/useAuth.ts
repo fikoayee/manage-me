@@ -14,7 +14,6 @@ export const useAuth = () => {
   };
 
   const getAuthUser = () => {
-    console.log("fafa");
     const userJson = localStorage.getItem("currUser");
     if (userJson) {
       return JSON.parse(userJson);
@@ -25,7 +24,6 @@ export const useAuth = () => {
   const login = async (loginBody: ILoginBody) => {
     try {
       const response = await authService.login(loginBody);
-      console.log(response.data);
       localStorage.setItem("currUser", JSON.stringify(response.data.user));
       localStorage.setItem("jwtToken", response.data.token);
       return response;

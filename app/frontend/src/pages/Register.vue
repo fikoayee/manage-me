@@ -141,7 +141,6 @@ export default defineComponent({
       try {
         this.registerData.color = this.getRandomColor();
         const response = await this.register(this.registerData);
-        console.log(response);
 
         if (!response) {
           this.createToast(
@@ -153,7 +152,6 @@ export default defineComponent({
           this.handleNavigation("/login");
         }
       } catch (error) {
-        console.log(error);
         this.createToast(
           "Something went wrong, could not register. Please try again later..."
         );

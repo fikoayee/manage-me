@@ -73,7 +73,6 @@ export default defineComponent({
   mounted() {
     this.currentStatus =
       this.setPriorityStyle(this.taskStatus) || STATUSES.TODO;
-    console.log(this.taskStatus);
   },
 });
 </script>
