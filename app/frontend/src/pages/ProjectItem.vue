@@ -235,7 +235,10 @@
       ></v-textarea>
       <p class="mb-1 ml-1">Tasks:</p>
       <div class="max-h-60 overflow-y-scroll">
-        <v-card v-for="i in 14" :color="themeState.isDarkTheme? '#171717' : '#e3e3e3'" class="flex mb-1 story-item"
+        <v-card
+          v-for="i in 14"
+          :color="themeState.isDarkTheme ? '#171717' : '#e3e3e3'"
+          class="flex mb-1 story-item"
           ><div class="flex my-1.5 items-center pl-2.5">
             Nazwa taska raz dwa
             <v-avatar
@@ -264,14 +267,13 @@
   <div class="h-full flex flex-col px-4">
     <div class="flex">
       <v-tabs
-
         v-model="tab"
         height="48"
         align-tabs="center"
         color=""
         elevation="24"
         :class="themeState.isDarkTheme ? 'bg-neutral-900' : 'bg-neutral-600'"
-        class=" w-fit pt-1.5 mb-2 rounded-[24px] ml-32 mt-2 mx-auto"
+        class="w-fit pt-1.5 mb-2 rounded-[24px] ml-32 mt-2 mx-auto"
       >
         <div class="flex w-full">
           <div class="ml-1.5">
@@ -310,8 +312,25 @@
         @click="tab === 1 ? handleOpenTask() : handleOpenSubtask()"
       ></v-btn>
     </div>
+    <v-row v-if="tab === 2">
+      <v-col
+        v-for="(status, index) in ['To Do', 'Doing', 'Done']"
+        :key="index"
+        :data-status="status"
+      >
+        <v-card
+          :title="status"
+          :theme="themeState.isDarkTheme ? 'dark' : ''"
+          class="mb-2"
+        ></v-card>
+      </v-col>
+    </v-row>
     <div v-if="tab === 1" class="">
-      <v-card class="h-4 rounded-b-0 rounded-t-xl" :theme="themeState.isDarkTheme? 'dark' : ''" flat></v-card>
+      <v-card
+        class="h-4 rounded-b-0 rounded-t-xl"
+        :theme="themeState.isDarkTheme ? 'dark' : ''"
+        flat
+      ></v-card>
       <v-table
         :theme="themeState.isDarkTheme ? 'dark' : ''"
         :key="tableKey"
@@ -332,7 +351,12 @@
           <tr
             v-for="item in mappedTasks"
             :key="item._id"
-            class="hover:bg-neutral-800"
+            class="cursor-pointer"
+            :class="
+              themeState.isDarkTheme
+                ? 'hover:bg-neutral-800'
+                : 'hover:bg-neutral-200'
+            "
             @click="handleOpenTask(item)"
           >
             <td>{{ item.name }}</td>
@@ -379,7 +403,7 @@
         </tbody>
       </v-table>
       <v-empty-state
-      :class="themeState.isDarkTheme  ? 'bg-[#212121]' : 'bg-white'"
+        :class="themeState.isDarkTheme ? 'bg-[#212121]' : 'bg-white'"
         image="https://cdn.vuetifyjs.com/docs/images/components/v-empty-state/teamwork.png"
       >
         <template v-slot:title>
@@ -394,7 +418,7 @@
 
         <template v-slot:actions>
           <v-btn
-            :color="themeState.isDarkTheme? 'white' : 'grey'"
+            :color="themeState.isDarkTheme ? 'white' : 'grey'"
             elevation="1"
             rounded="lg"
             size="small"
@@ -410,23 +434,21 @@
         flat
       ></v-card>
     </div>
-    <div v-if="tab === 2" class="h-full flex flex-col">
+    <div v-if="tab === 2" class="flex flex-col h-[1200px]">
       <v-row no-gutters>
         <v-col v-for="column in columns" :key="column.id" cols="4" class="px-1">
-          <v-card
-            :title="column.title"
-            :theme="themeState.isDarkTheme ? 'dark' : ''"
-            class="mb-2"
-          ></v-card>
-          <div :class="themeState.isDarkTheme ? 'bg-[#303030]' : 'bg-[#bdbdbd]'" class="h-full bg-[#303030] py-1 px-1 rounded-lg">
+          <div
+            :class="themeState.isDarkTheme ? 'bg-[#303030]' : 'bg-[#bdbdbd]'"
+            class="h-full bg-[#303030] py-1 px-1 rounded-lg"
+          >
             <VueDraggableNext
-              :animation="200"
-              ghost-class="ghost-card"
-              group="tasks"
+              class="dragArea list-group w-full"
               :list="getSubtasksByStatus(column.status)"
+              @change="log"
             >
               <v-card
                 v-for="item in getSubtasksByStatus(column.status)"
+                :key="item._id"
                 rounded="lg"
                 class="border-2 press-effect mb-2"
                 variant="elevated"
@@ -526,7 +548,7 @@ export default defineComponent({
       patchSubtask,
       deleteSubtask,
       isAuthenticated,
-      router
+      router,
     };
   },
   data() {
@@ -622,6 +644,9 @@ export default defineComponent({
     },
   },
   methods: {
+    log(event: any) {
+      console.log(event);
+    },
     setPriorityColor(priority: string) {
       console.log(priority);
       switch (priority) {
@@ -958,9 +983,9 @@ export default defineComponent({
     },
   },
   async mounted() {
-    if(!this.isAuthenticated()){
+    if (!this.isAuthenticated()) {
       this.router.push(`/login`);
-      return
+      return;
     }
     this.tasks = await this.getTasksList();
     await this.mapTaskList();

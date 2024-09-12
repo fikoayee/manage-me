@@ -32,7 +32,7 @@
         </div>
       </template>
     </v-navigation-drawer>
-    <v-main
+    <v-main 
       :class="themeState.isDarkTheme ? 'bg-neutral-800' : 'bg-neutral-300'"
     >
       <RouterView
@@ -48,7 +48,6 @@ export default defineComponent({
   props: {},
   data() {
     return {
-      isDarkTheme: true,
       menuItems: [
         {
           title: "Projects",
