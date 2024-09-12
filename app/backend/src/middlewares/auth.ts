@@ -16,10 +16,8 @@ export const authenticate = (
   try {
     const decoded: any = verifyToken(token);
     req.user = decoded;
-    console.log(req.user);
     next();
   } catch (err) {
-    console.log(err);
     throw new HttpError(`Invalid token`, 401);
   }
 };

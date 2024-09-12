@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const subtask_model_1 = require("../../../models/subtask.model.js");
+const subtask_model_1 = require("../../../models/subtask.model");
 const getTaskSubtasks = (taskId) => __awaiter(void 0, void 0, void 0, function* () {
     const subtasks = yield subtask_model_1.Subtask.find({ task: { $in: taskId } });
     return subtasks;

@@ -50,9 +50,9 @@ const subtaskSchema = new mongoose_1.Schema({
         required: true,
     },
     dateCreate: { type: Date, default: () => new Date(), required: true },
-    dateStart: { type: Date },
-    dateEnd: { type: Date },
-    assigned: { type: mongoose_1.Types.ObjectId, ref: "User", required: true },
+    dateStart: { type: Date, default: null },
+    dateEnd: { type: Date, default: null },
+    assigned: { type: mongoose_1.Types.ObjectId, ref: "User", default: null },
 });
 const Subtask = mongoose_1.default.model("Subtask", subtaskSchema);
 exports.Subtask = Subtask;

@@ -15,11 +15,9 @@ const authenticate = (req, res, next) => {
     try {
         const decoded = (0, auth_1.verifyToken)(token);
         req.user = decoded;
-        console.log(req.user);
         next();
     }
     catch (err) {
-        console.log(err);
         throw new http_error_model_1.default(`Invalid token`, 401);
     }
 };

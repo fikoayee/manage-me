@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const subtask_model_1 = require("../../../models/subtask.model.js");
+const subtask_model_1 = require("../../../models/subtask.model");
 const http_error_model_1 = __importDefault(require("../../../models/http-error.model"));
 const deleteSubtask = (subtaskId) => __awaiter(void 0, void 0, void 0, function* () {
     const subtask = yield subtask_model_1.Subtask.findOne({

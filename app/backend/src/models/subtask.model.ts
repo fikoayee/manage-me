@@ -27,9 +27,9 @@ const subtaskSchema = new Schema({
     required: true,
   },
   dateCreate: { type: Date, default: () => new Date(), required: true },
-  dateStart: { type: Date },
-  dateEnd: { type: Date },
-  assigned: { type: Types.ObjectId, ref: "User", required:true },
+  dateStart: { type: Date, default: null },
+  dateEnd: { type: Date, default: null },
+  assigned: { type: Types.ObjectId, ref: "User", default: null },
 });
 
 type ISubtaskSchema = InferSchemaType<typeof subtaskSchema>;
