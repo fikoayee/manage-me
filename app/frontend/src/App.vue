@@ -1,7 +1,7 @@
 <template>
   <v-app class="min-h-full min-w-full">
     <v-navigation-drawer
-      theme="dark"
+      :theme="themeState.isDarkTheme ? 'dark' : ''"
       permanent
       :rail="!this.$vuetify.display.mdAndUp && !hideNavbar"
       :width="hideNavbar ? 0 : 200"
@@ -20,19 +20,35 @@
           :title="item.title"
           @click="handleNavigation(item.route)"
         ></v-list-item>
+        <v-list-item
+          prepend-icon="mdi mdi-theme-light-dark"
+          title="Light/Dark"
+          @click="toggleTheme"
+        />
       </v-list>
+      <template v-slot:append>
+        <div class="pa-2">
+          <v-btn block @click="handleLogout"> Logout </v-btn>
+        </div>
+      </template>
     </v-navigation-drawer>
-    <v-main class="bg-neutral-800"> <RouterView /></v-main>
+    <v-main
+      :class="themeState.isDarkTheme ? 'bg-neutral-800' : 'bg-neutral-300'"
+    >
+      <RouterView
+    /></v-main>
   </v-app>
 </template>
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, inject } from "vue";
 import { useRouter } from "vue-router";
+import { useAuth } from "./composables/useAuth";
 export default defineComponent({
   components: {},
   props: {},
   data() {
     return {
+      isDarkTheme: true,
       menuItems: [
         {
           title: "Projects",
@@ -50,8 +66,15 @@ export default defineComponent({
     };
   },
   methods: {
+    handleLogout() {
+      this.logout();
+      this.router.push(`/login`);
+    },
     handleNavigation(route: string) {
       this.router.push(route);
+    },
+    toggleTheme() {
+      this.themeState.isDarkTheme = !this.themeState.isDarkTheme;
     },
   },
   computed: {
@@ -61,13 +84,21 @@ export default defineComponent({
   },
   setup() {
     const router = useRouter();
+    const { isAuthenticated, logout } = useAuth();
+    const themeState = inject("themeState") as { isDarkTheme: boolean };
     return {
       router,
+      themeState,
+      isAuthenticated,
+      logout,
     };
   },
-  mounted() {},
+  mounted() {
+    if (!this.isAuthenticated()) {
+      this.router.push(`/login`);
+      return;
+    }
+  },
 });
 </script>
-<style scoped>
-
-</style>
+<style scoped></style>

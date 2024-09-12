@@ -11,7 +11,7 @@
         class="w-full px-6 py-6 flex flex-col items-center justify-center d-flex max-w-[550px]"
         rounded="xl"
         elevation="24"
-        theme="dark"
+        :theme="themeState.isDarkTheme? 'dark' : ''"
       >
         <p class="text-3xl font-[500]">LOGIN</p>
         <p class="font-[500] text-neutral-400">
@@ -80,7 +80,7 @@
   </v-row>
 </template>
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, inject } from "vue";
 import { useRouter } from "vue-router";
 import { useAuth } from "../composables/useAuth";
 export default defineComponent({
@@ -144,9 +144,10 @@ export default defineComponent({
     },
   },
   setup() {
+    const themeState = inject("themeState") as { isDarkTheme: boolean };
     const router = useRouter();
     const { login } = useAuth();
-    return { router, login };
+    return { router, login, themeState };
   },
   mounted() {},
 });

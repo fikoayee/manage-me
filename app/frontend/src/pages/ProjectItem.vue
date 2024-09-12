@@ -13,7 +13,12 @@
     width="auto"
     persistent
   >
-    <v-card width="800px" theme="dark" class="px-4 pt-2" rounded="xl">
+    <v-card
+      width="800px"
+      :theme="themeState.isDarkTheme ? 'dark' : ''"
+      class="px-4 pt-2"
+      rounded="xl"
+    >
       <v-card-title class="flex mb-2">
         <div class="flex overflow-hidden">
           <v-select
@@ -160,7 +165,12 @@
   <!-- subtask ^^^ -->
   <!-- task vvv -->
   <v-dialog id="task-dialog" v-model="taskVisible" width="auto" persistent>
-    <v-card width="800px" theme="dark" class="px-4 pt-2" rounded="xl">
+    <v-card
+      width="800px"
+      :theme="themeState.isDarkTheme ? 'dark' : ''"
+      class="px-4 pt-2"
+      rounded="xl"
+    >
       <v-card-title class="flex mb-2">
         <div class="flex">
           <v-chip rounded="lg">project id:{{ id }}</v-chip>
@@ -225,7 +235,7 @@
       ></v-textarea>
       <p class="mb-1 ml-1">Tasks:</p>
       <div class="max-h-60 overflow-y-scroll">
-        <v-card v-for="i in 14" color="#171717" class="flex mb-1 story-item"
+        <v-card v-for="i in 14" :color="themeState.isDarkTheme? '#171717' : '#e3e3e3'" class="flex mb-1 story-item"
           ><div class="flex my-1.5 items-center pl-2.5">
             Nazwa taska raz dwa
             <v-avatar
@@ -254,12 +264,14 @@
   <div class="h-full flex flex-col px-4">
     <div class="flex">
       <v-tabs
+
         v-model="tab"
         height="48"
         align-tabs="center"
         color=""
         elevation="24"
-        class="bg-neutral-900 w-fit pt-1.5 mb-2 rounded-[24px] ml-32 mt-2 mx-auto"
+        :class="themeState.isDarkTheme ? 'bg-neutral-900' : 'bg-neutral-600'"
+        class=" w-fit pt-1.5 mb-2 rounded-[24px] ml-32 mt-2 mx-auto"
       >
         <div class="flex w-full">
           <div class="ml-1.5">
@@ -299,8 +311,12 @@
       ></v-btn>
     </div>
     <div v-if="tab === 1" class="">
-      <v-card class="h-4 rounded-b-0 rounded-t-xl" theme="dark" flat></v-card>
-      <v-table theme="dark" :key="tableKey" class="">
+      <v-card class="h-4 rounded-b-0 rounded-t-xl" :theme="themeState.isDarkTheme? 'dark' : ''" flat></v-card>
+      <v-table
+        :theme="themeState.isDarkTheme ? 'dark' : ''"
+        :key="tableKey"
+        class=""
+      >
         <thead>
           <tr>
             <th class="text-left">Name</th>
@@ -309,9 +325,10 @@
             <th class="text-left">Date</th>
             <th class="text-left">Status</th>
             <th class="text-left">Owner</th>
+            <th class="text-left">Action</th>
           </tr>
         </thead>
-        <tbody class="">
+        <tbody class="" v-if="mappedTasks.length > 0">
           <tr
             v-for="item in mappedTasks"
             :key="item._id"
@@ -349,16 +366,59 @@
                 {{ item.ownerInfo[0].email[0] }}
               </v-avatar>
             </td>
+            <td>
+              <v-btn
+                icon="mdi mdi-trash-can-outline"
+                class="ml-auto"
+                color="red-darken-4"
+                variant="text"
+                @click.stop="removeTask(item._id)"
+              ></v-btn>
+            </td>
           </tr>
         </tbody>
       </v-table>
-      <v-card class="h-4 rounded-b-xl rounded-t-0" theme="dark" flat></v-card>
+      <v-empty-state
+      :class="themeState.isDarkTheme  ? 'bg-[#212121]' : 'bg-white'"
+        image="https://cdn.vuetifyjs.com/docs/images/components/v-empty-state/teamwork.png"
+      >
+        <template v-slot:title>
+          <div class="text-subtitle-2 mt-8"></div>
+        </template>
+
+        <template v-slot:text>
+          <div class="text-caption">
+            Track and receive your incoming inventory from suppliers
+          </div>
+        </template>
+
+        <template v-slot:actions>
+          <v-btn
+            :color="themeState.isDarkTheme? 'white' : 'grey'"
+            elevation="1"
+            rounded="lg"
+            size="small"
+            text="Add task"
+            width="96"
+            @click="handleOpenTask"
+          ></v-btn>
+        </template>
+      </v-empty-state>
+      <v-card
+        class="h-4 rounded-b-xl rounded-t-0"
+        :theme="themeState.isDarkTheme ? 'dark' : ''"
+        flat
+      ></v-card>
     </div>
     <div v-if="tab === 2" class="h-full flex flex-col">
       <v-row no-gutters>
         <v-col v-for="column in columns" :key="column.id" cols="4" class="px-1">
-          <v-card :title="column.title" theme="dark" class="mb-2"></v-card>
-          <div class="h-full bg-[#303030] py-1 px-1 rounded-lg">
+          <v-card
+            :title="column.title"
+            :theme="themeState.isDarkTheme ? 'dark' : ''"
+            class="mb-2"
+          ></v-card>
+          <div :class="themeState.isDarkTheme ? 'bg-[#303030]' : 'bg-[#bdbdbd]'" class="h-full bg-[#303030] py-1 px-1 rounded-lg">
             <VueDraggableNext
               :animation="200"
               ghost-class="ghost-card"
@@ -370,7 +430,7 @@
                 rounded="lg"
                 class="border-2 press-effect mb-2"
                 variant="elevated"
-                theme="dark"
+                :theme="themeState.isDarkTheme ? 'dark' : ''"
                 elevation="12"
               >
                 <v-card-title class="">
@@ -423,11 +483,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, inject } from "vue";
 import { useTask } from "../composables/useTask.ts";
 import { useUser } from "../composables/useUser.ts";
 import { useAuth } from "../composables/useAuth.ts";
 import { useSubtask } from "../composables/useSubtask.ts";
+import { useRouter } from "vue-router";
 import { enUS } from "date-fns/locale";
 import { format } from "date-fns";
 import Loading from "../components/Loading.vue";
@@ -444,12 +505,15 @@ export default defineComponent({
     id: { type: String, required: true },
   },
   setup() {
+    const router = useRouter();
+    const themeState = inject("themeState") as { isDarkTheme: boolean };
     const { getProjectTasks, patchTask, addTask, deleteTask } = useTask();
     const { getUser, getUsers } = useUser();
-    const { getAuthUser } = useAuth();
+    const { getAuthUser, isAuthenticated } = useAuth();
     const { getSubtasksByTaskIds, addSubtask, patchSubtask, deleteSubtask } =
       useSubtask();
     return {
+      themeState,
       getProjectTasks,
       getUser,
       patchTask,
@@ -461,6 +525,8 @@ export default defineComponent({
       addSubtask,
       patchSubtask,
       deleteSubtask,
+      isAuthenticated,
+      router
     };
   },
   data() {
@@ -579,7 +645,7 @@ export default defineComponent({
 
     onStatusChangeSubtaskDialog(newStatus: any) {
       if (newStatus.name === "todo") {
-        this.subtaskBody.assigned = '';
+        this.subtaskBody.assigned = "";
       }
       this.subtaskBody.status = newStatus.name;
     },
@@ -733,10 +799,10 @@ export default defineComponent({
     async removeTask(taskId: string) {
       try {
         const response = await this.deleteTask(taskId);
-
+        console.log(response);
         if (response) {
           this.createToast("Success! Task has been removed.", "success");
-          // this.mappedTasks = this.mappedTasks.filter((t) => t._id !== taskId);
+          this.mappedTasks = this.mappedTasks.filter((t) => t._id !== taskId);
         } else {
           this.createToast(
             "Something went wrong, could not delete. Please try again later..."
@@ -892,6 +958,10 @@ export default defineComponent({
     },
   },
   async mounted() {
+    if(!this.isAuthenticated()){
+      this.router.push(`/login`);
+      return
+    }
     this.tasks = await this.getTasksList();
     await this.mapTaskList();
     this.subtasks = await this.getSubtaskList();

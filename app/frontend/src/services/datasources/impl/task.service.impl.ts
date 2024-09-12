@@ -44,7 +44,7 @@ export class TaskServiceImpl implements TaskService {
 
   async deleteTask(taskId: string): Promise<unknown> {
     try {
-      const response = await api.patch(
+      const response = await api.delete(
         `${this.SERVICE_PATH_TASKS}/task/${taskId}`
       );
       return response;

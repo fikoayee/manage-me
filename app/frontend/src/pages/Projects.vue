@@ -17,7 +17,7 @@
     >
       <v-card
         :title="projectBody?._id ? 'Edit Project' : 'Create Project'"
-        theme="dark"
+        :theme="themeState.isDarkTheme ? 'dark' : ''"
         class="px-4 w-[450px] sm:w-[500px]"
         rounded="xl"
       >
@@ -66,7 +66,7 @@
         width="500"
         title="Irreversible Change: Are you sure?"
         text="To proceed with the deletion, you must re-enter the project name to confirm."
-        theme="dark"
+        :theme="themeState.isDarkTheme ? 'dark' : ''"
         class="px-4"
         rounded="xl"
       >
@@ -104,11 +104,12 @@
       ></v-col>
       <v-col cols="12" sm="6" md="6" lg="6" class="flex justify-center">
         <v-text-field
+          v-model="searchInput"
           appendIcon=""
           label="Search"
           variant="solo"
           max-width="500"
-          theme="dark"
+          :theme="themeState.isDarkTheme ? 'dark' : ''"
           elevation="24"
           append-inner-icon="mdi mdi-magnify"
           clearable
@@ -129,18 +130,20 @@
       >
     </v-row>
     <v-row justify="center">
-      <v-col v-for="project in projects" cols="auto" class="flex">
+      <v-col v-for="project in filteredProjects" cols="auto" class="flex">
         <v-card
           width="350"
           height="300"
           rounded="lg"
           class="border-2 press-effect"
           variant="elevated"
-          theme="dark"
+          :theme="themeState.isDarkTheme ? 'dark' : ''"
           elevation="24"
-         
         >
-          <v-card-title class="hover:text-purple-600"  @click="navigateToProjectItem(project)">
+          <v-card-title
+            class="hover:text-purple-600"
+            @click="navigateToProjectItem(project)"
+          >
             {{ project.name }}
           </v-card-title>
           <v-card-subtitle>2024-08-14</v-card-subtitle>
@@ -174,8 +177,9 @@
   </v-container>
 </template>
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, inject } from "vue";
 import { useRouter } from "vue-router";
+import { useAuth } from "../composables/useAuth.ts";
 import { useProject } from "../composables/useProject.ts";
 import { IProjectBody } from "../services/datasources/project.service.ts";
 import Loading from "../components/Loading.vue";
@@ -185,7 +189,9 @@ export default defineComponent({
   setup() {
     const { getProjects, deleteProject, updateProject, createProject } =
       useProject();
+    const themeState = inject("themeState") as { isDarkTheme: boolean };
     const router = useRouter();
+    const { isAuthenticated } = useAuth();
 
     return {
       getProjects,
@@ -193,10 +199,13 @@ export default defineComponent({
       updateProject,
       createProject,
       router,
+      themeState,
+      isAuthenticated,
     };
   },
   data() {
     return {
+      searchInput: "",
       valid: false,
       toastMessage: "",
       showToast: false,
@@ -229,7 +238,16 @@ export default defineComponent({
       },
     };
   },
-  computed: {},
+  computed: {
+    filteredProjects() {
+      if (this.projects?.length > 0) {
+        const search = this.searchInput.toLowerCase();
+        return this.projects.filter((project) =>
+          project.name.toLowerCase().includes(search)
+        );
+      }
+    },
+  },
   methods: {
     navigateToProjectItem(project: any) {
       this.router.push(`/projects/${project._id}`);
@@ -341,6 +359,11 @@ export default defineComponent({
     },
   },
   async mounted() {
+
+    if(!this.isAuthenticated()){
+      this.router.push(`/login`);
+      return
+    }
     this.projects = await this.getProjects();
     this.isPageLoading = false;
   },
